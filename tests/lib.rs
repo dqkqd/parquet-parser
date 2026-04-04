@@ -1,6 +1,9 @@
 #[cfg(false)]
 mod magic;
 
+#[cfg(false)]
+mod file_metadata;
+
 use std::{io::Cursor, sync::Arc};
 
 use anyhow::Result;
