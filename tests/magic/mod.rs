@@ -53,6 +53,8 @@ col
         false,
         Encoding::PLAIN,
         Compression::UNCOMPRESSED,
+        None,
+        None,
     )?;
 
     assert!(ensure_header_footer_magic(data).is_ok());

@@ -18,6 +18,8 @@ col1,col2
         false,
         Encoding::PLAIN,
         Compression::UNCOMPRESSED,
+        None,
+        None,
     )?;
     let file_metadata = read_file_metadata(parquet_data)?;
     assert_eq!(file_metadata.version, 1);

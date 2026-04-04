@@ -4,6 +4,9 @@ mod magic;
 #[cfg(false)]
 mod file_metadata;
 
+#[cfg(false)]
+mod data_page;
+
 use std::{io::Cursor, sync::Arc};
 
 use anyhow::Result;
@@ -12,7 +15,7 @@ use bytes::Bytes;
 use parquet::{
     arrow::ArrowWriter,
     basic::{Compression, Encoding},
-    file::properties::WriterProperties,
+    file::properties::{DEFAULT_DATA_PAGE_ROW_COUNT_LIMIT, WriterProperties},
 };
 
 pub fn make_parquet(
@@ -20,12 +23,17 @@ pub fn make_parquet(
     dictionary_enabled: bool,
     encoding: Encoding,
     compression: Compression,
+    rows_per_page: Option<usize>,
+    rows_per_group: Option<usize>,
 ) -> Result<Bytes> {
     let props = WriterProperties::builder()
         .set_encoding(encoding)
         .set_compression(compression)
         .set_dictionary_enabled(dictionary_enabled)
         .set_created_by("Hello parquet!".to_string())
+        .set_data_page_row_count_limit(rows_per_page.unwrap_or(DEFAULT_DATA_PAGE_ROW_COUNT_LIMIT))
+        .set_write_batch_size(1) // ensure we don't write to page boundary
+        .set_max_row_group_row_count(rows_per_group)
         .build();
 
     let mut cursor = Cursor::new(data.trim().as_bytes());
