@@ -1,5 +1,6 @@
 use anyhow::Result;
 use bytes::Bytes;
+use polars::prelude::*;
 
 use crate::format::{ColumnMetaData, PageHeader};
 
@@ -36,5 +37,14 @@ pub fn read_data_page(data: &mut Bytes, column_metadata: &ColumnMetaData) -> Res
 /// TODO: docs
 #[allow(unused_variables)]
 pub fn read_data_pages(data: Bytes, column_metadata: &ColumnMetaData) -> Result<Vec<DataPage>> {
+    todo!()
+}
+
+/// TODO: docs
+#[allow(unused_variables)]
+pub fn decode_data_page(
+    data_page: DataPage,
+    column_metadata: &ColumnMetaData,
+) -> Result<Vec<Scalar>> {
     todo!()
 }

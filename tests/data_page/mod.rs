@@ -18,6 +18,7 @@ my_col
         Compression::UNCOMPRESSED,
         None,
         None,
+        None,
     )?;
     let file_metadata = read_file_metadata(parquet_data.clone())?;
 
@@ -54,6 +55,7 @@ my_col
         Encoding::PLAIN,
         Compression::UNCOMPRESSED,
         Some(2),
+        None,
         None,
     )?;
     let file_metadata = read_file_metadata(parquet_data.clone())?;
