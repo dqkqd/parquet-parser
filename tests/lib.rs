@@ -17,6 +17,9 @@ mod column;
 mod row_group;
 
 #[cfg(false)]
+mod bit_packed_decoder;
+
+#[cfg(false)]
 mod uleb128_decoder;
 
 use std::{collections::HashMap, io::Cursor, sync::Arc};
@@ -36,6 +39,7 @@ use parquet_parser::format::Type;
 
 fn parquet_type_to_arrow_type(parquet_type: Type) -> DataType {
     match parquet_type {
+        Type::BOOLEAN => DataType::Boolean,
         Type::INT32 => DataType::Int32,
         Type::INT64 => DataType::Int64,
         Type::FLOAT => DataType::Float32,
