@@ -52,6 +52,9 @@ mod dictionary_decode_rle;
 #[cfg(false)]
 mod compression;
 
+#[cfg(false)]
+mod columns_null;
+
 use std::{collections::HashMap, io::Cursor, sync::Arc};
 
 use anyhow::Result;
