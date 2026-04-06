@@ -16,6 +16,9 @@ mod column;
 #[cfg(false)]
 mod row_group;
 
+#[cfg(false)]
+mod uleb128_decoder;
+
 use std::{collections::HashMap, io::Cursor, sync::Arc};
 
 use anyhow::Result;
