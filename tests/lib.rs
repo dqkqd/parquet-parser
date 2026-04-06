@@ -22,6 +22,9 @@ mod bit_packed_decoder;
 #[cfg(false)]
 mod uleb128_decoder;
 
+#[cfg(false)]
+mod rle_decoder;
+
 use std::{collections::HashMap, io::Cursor, sync::Arc};
 
 use anyhow::Result;
