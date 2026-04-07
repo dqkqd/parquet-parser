@@ -7,6 +7,9 @@ mod file_metadata;
 #[cfg(false)]
 mod data_page;
 
+#[cfg(false)]
+mod plain_decoder;
+
 use std::{io::Cursor, sync::Arc};
 
 use anyhow::Result;
