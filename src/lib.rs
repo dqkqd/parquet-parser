@@ -7,3 +7,4 @@ pub mod data_page;
 pub mod decoder;
 pub mod file_metadata;
 pub mod magic;
+pub mod row_group;

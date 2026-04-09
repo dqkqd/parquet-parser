@@ -11,6 +11,7 @@ thrift = { version = "0.17.0", default-features = false }
 polars = { version = "0.53.0", default-features = false, features = [
   "fmt",
   "parquet",
+  "lazy",
 ] }
 
 [dev-dependencies]

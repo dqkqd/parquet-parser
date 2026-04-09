@@ -13,6 +13,9 @@ mod plain_decoder;
 #[cfg(false)]
 mod column;
 
+#[cfg(false)]
+mod row_group;
+
 use std::{collections::HashMap, io::Cursor, sync::Arc};
 
 use anyhow::Result;
