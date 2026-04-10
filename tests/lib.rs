@@ -25,6 +25,9 @@ mod uleb128_decoder;
 #[cfg(false)]
 mod rle_decoder;
 
+#[cfg(false)]
+mod compression;
+
 use std::{collections::HashMap, io::Cursor, sync::Arc};
 
 use anyhow::Result;

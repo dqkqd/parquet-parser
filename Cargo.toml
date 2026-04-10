@@ -13,7 +13,21 @@ polars = { version = "0.53.0", default-features = false, features = [
   "parquet",
   "lazy",
 ] }
+snap = "1.1.1"
+flate2 = "1.1.9"
+brotli = "8.0.2"
+zstd = "0.13.3"
+lz4_flex = { version = "0.13.0", features = ["frame"] }
 
 [dev-dependencies]
 arrow = "58.1.0"
-parquet = { version = "58.1.0", default-features = false, features = ["arrow"] }
+parquet = { version = "58.1.0", default-features = false, features = [
+  "arrow",
+  "snap",
+  "flate2",
+  "flate2-zlib-rs",
+  "brotli",
+  "zstd",
+  "lz4",
+] }
+rstest = "0.26.1"
