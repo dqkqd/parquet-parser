@@ -5,7 +5,7 @@ use parquet_parser::file_metadata::read_file_metadata;
 use crate::make_parquet;
 
 #[test]
-fn simple() -> Result<()> {
+fn ok() -> Result<()> {
     let parquet_data = make_parquet(
         r#"
 col1,col2

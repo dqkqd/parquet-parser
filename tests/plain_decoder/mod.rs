@@ -8,6 +8,59 @@ use parquet_parser::{
 use polars::prelude::*;
 
 #[test]
+fn boolean_16_bits() -> Result<()> {
+    let mut data = Bytes::from(0b0000111111110000u16.as_bytes());
+    let decoder = PlainDecoder::new(Type::BOOLEAN);
+    assert_eq!(
+        decoder.decode(&mut data, 16)?,
+        [
+            Scalar::from(false),
+            Scalar::from(false),
+            Scalar::from(false),
+            Scalar::from(false),
+            Scalar::from(true),
+            Scalar::from(true),
+            Scalar::from(true),
+            Scalar::from(true),
+            Scalar::from(true),
+            Scalar::from(true),
+            Scalar::from(true),
+            Scalar::from(true),
+            Scalar::from(false),
+            Scalar::from(false),
+            Scalar::from(false),
+            Scalar::from(false),
+        ]
+    );
+    Ok(())
+}
+
+#[test]
+fn boolean_5_bits() -> Result<()> {
+    let mut data = Bytes::from(0b11110000u8.as_bytes());
+    let decoder = PlainDecoder::new(Type::BOOLEAN);
+    assert_eq!(
+        decoder.decode(&mut data, 5)?,
+        [
+            Scalar::from(false),
+            Scalar::from(false),
+            Scalar::from(false),
+            Scalar::from(false),
+            Scalar::from(true),
+        ]
+    );
+    Ok(())
+}
+
+#[test]
+fn boolean_num_values_highers_than_actual_bits() -> Result<()> {
+    let mut data = Bytes::from(0b11110000u8.as_bytes());
+    let decoder = PlainDecoder::new(Type::BOOLEAN);
+    assert!(decoder.decode(&mut data, 10).is_err());
+    Ok(())
+}
+
+#[test]
 fn i64_ok() -> Result<()> {
     let mut data = Bytes::from(
         [
@@ -26,6 +79,7 @@ fn i64_ok() -> Result<()> {
 
 #[test]
 fn i64_too_many_values() -> Result<()> {
+fn i64_num_values_highers_than_actual_values() -> Result<()> {
     let mut data = Bytes::from(
         [
             1i64.to_le_bytes().as_slice(), // 8 bytes
@@ -38,7 +92,7 @@ fn i64_too_many_values() -> Result<()> {
 }
 
 #[test]
-fn i64_not_enough_bytes() -> Result<()> {
+fn i64_require_8_bytes_for_each_value() -> Result<()> {
     let mut data = Bytes::from(
         [
             1i64.to_le_bytes().as_slice(), // 8 bytes
@@ -69,7 +123,7 @@ fn double_ok() -> Result<()> {
 }
 
 #[test]
-fn double_not_enough_length() -> Result<()> {
+fn double_num_values_highers_than_actual_values() -> Result<()> {
     let mut data = Bytes::from(
         [
             1.0f64.to_le_bytes().as_slice(), // 8 bytes
@@ -82,7 +136,7 @@ fn double_not_enough_length() -> Result<()> {
 }
 
 #[test]
-fn double_not_enough_bytes() -> Result<()> {
+fn double_require_8_bytes_for_each_value() -> Result<()> {
     let mut data = Bytes::from(
         [
             1.0f64.to_le_bytes().as_slice(), // 8 bytes
@@ -118,7 +172,7 @@ fn string_ok() -> Result<()> {
 }
 
 #[test]
-fn string_not_enough_length() -> Result<()> {
+fn string_num_values_highers_than_actual_values() -> Result<()> {
     let mut data = Bytes::from(
         [
             5i32.to_le_bytes().as_slice(),
@@ -132,7 +186,7 @@ fn string_not_enough_length() -> Result<()> {
 }
 
 #[test]
-fn string_not_enough_bytes() -> Result<()> {
+fn string_variale_length_mis_match() -> Result<()> {
     let mut data = Bytes::from(
         [
             8i32.to_le_bytes().as_slice(),

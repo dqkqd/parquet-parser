@@ -12,7 +12,7 @@ use crate::make_parquet;
 #[case::brotli(Compression::BROTLI(BrotliLevel::default()))]
 #[case::zstd(Compression::ZSTD(ZstdLevel::default()))]
 #[case::lz4_raw(Compression::LZ4_RAW)]
-fn simple(#[case] compression: Compression) -> Result<()> {
+fn ok(#[case] compression: Compression) -> Result<()> {
     use parquet_parser::row_group::read_row_groups;
 
     let data = make_parquet(

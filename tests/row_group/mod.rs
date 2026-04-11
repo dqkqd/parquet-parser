@@ -12,7 +12,7 @@ use polars::prelude::*;
 use crate::make_parquet;
 
 #[test]
-fn single_group() -> Result<()> {
+fn one_group() -> Result<()> {
     let data = make_parquet(
         r#"
 i32,i64,float,double,string
