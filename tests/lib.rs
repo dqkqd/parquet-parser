@@ -23,7 +23,16 @@ mod bit_packed_decoder;
 mod uleb128_decoder;
 
 #[cfg(false)]
+mod rle_bit_packing_hybrid_branch_bit_packing;
+
+#[cfg(false)]
 mod rle_decoder;
+
+#[cfg(false)]
+mod rle_bit_packing_hybrid_branch_rle;
+
+#[cfg(false)]
+mod rle_bit_packing_hybrid;
 
 #[cfg(false)]
 mod compression;

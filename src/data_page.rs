@@ -2,7 +2,7 @@ use anyhow::Result;
 use bytes::Bytes;
 use polars::prelude::*;
 
-use crate::format::{ColumnMetaData, PageHeader};
+use crate::format::{ColumnMetaData, Encoding, PageHeader};
 
 /// TODO: docs
 #[derive(Debug)]
@@ -14,6 +14,11 @@ pub struct DataPage {
 impl DataPage {
     // TODO: docs
     pub fn num_values(&self) -> i32 {
+        todo!()
+    }
+
+    // TODO: docs
+    pub fn encoding(&self) -> Encoding {
         todo!()
     }
 }
