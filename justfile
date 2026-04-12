@@ -1,3 +1,5 @@
-style:
-  - cargo clippy --fix --allow-dirty
-  - cargo clippy --tests --fix --allow-dirty
+lint:
+    - cargo clippy --all-targets
+
+fix:
+    - cargo clippy --all-targets --fix --allow-dirty
