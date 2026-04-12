@@ -35,6 +35,21 @@ mod rle_bit_packing_hybrid_branch_rle;
 mod rle_bit_packing_hybrid;
 
 #[cfg(false)]
+mod dictionary_data_page;
+
+#[cfg(false)]
+mod bit_packed_bit_width_decoder;
+
+#[cfg(false)]
+mod dictionary_decode_bit_packed;
+
+#[cfg(false)]
+mod rle_bit_width_decoder;
+
+#[cfg(false)]
+mod dictionary_decode_rle;
+
+#[cfg(false)]
 mod compression;
 
 use std::{collections::HashMap, io::Cursor, sync::Arc};

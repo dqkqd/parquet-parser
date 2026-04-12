@@ -39,9 +39,15 @@ pub fn read_data_page(data: &mut Bytes, column_metadata: &ColumnMetaData) -> Res
     todo!()
 }
 
+#[derive(Debug)]
+pub struct DataPages {
+    pub data_pages: Vec<DataPage>,
+    pub dictionary_page: Option<DataPage>,
+}
+
 /// TODO: docs
 #[allow(unused_variables)]
-pub fn read_data_pages(data: Bytes, column_metadata: &ColumnMetaData) -> Result<Vec<DataPage>> {
+pub fn read_data_pages(data: Bytes, column_metadata: &ColumnMetaData) -> Result<DataPages> {
     todo!()
 }
 

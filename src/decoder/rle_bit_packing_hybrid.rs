@@ -57,13 +57,14 @@ pub fn rle_bit_packing_hybrid_decode(
     parquet_type: Type,
     bit_width: u8,
     num_values: usize,
+    prepend_length: bool,
 ) -> Result<Vec<Scalar>> {
     todo!()
 }
 
 // TODO: docs
 #[allow(unused_variables)]
-pub fn rle_bit_packing_hybrid_run_decode(
+fn rle_bit_packing_hybrid_run_decode(
     encoded_data: &mut Bytes,
     parquet_type: Type,
     bit_width: u8,
