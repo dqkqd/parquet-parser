@@ -2,13 +2,14 @@ use anyhow::Result;
 use bytes::Bytes;
 use polars::prelude::*;
 
-use crate::format::{ColumnMetaData, Encoding, PageHeader};
+use crate::format::{ColumnMetaData, Encoding, PageHeader, Type};
 
 /// TODO: docs
 #[derive(Debug)]
 pub struct DataPage {
     pub page_header: PageHeader,
     pub encoded_values: Bytes,
+    pub definition_levels: Option<Bytes>,
 }
 
 impl DataPage {
@@ -55,7 +56,16 @@ pub fn read_data_pages(data: Bytes, column_metadata: &ColumnMetaData) -> Result<
 #[allow(unused_variables)]
 pub fn decode_data_page(
     data_page: DataPage,
-    column_metadata: &ColumnMetaData,
+    parquet_type: Type,
+    num_values: usize,
+) -> Result<Vec<Scalar>> {
+    todo!()
+}
+
+#[allow(unused_variables)]
+pub fn decode_definition_levels(
+    definition_levels: Bytes,
+    num_values: usize,
 ) -> Result<Vec<Scalar>> {
     todo!()
 }

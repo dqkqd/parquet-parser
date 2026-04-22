@@ -69,7 +69,8 @@ three
 
     let dictionary_page = data_pages.dictionary_page.unwrap();
 
-    let dictionary_values = decode_data_page(dictionary_page, column_metadata)?;
+    let num_values = dictionary_page.num_values() as usize; // TODO: cleanup
+    let dictionary_values = decode_data_page(dictionary_page, column_metadata.type_, num_values)?;
     assert_eq!(
         dictionary_values,
         [

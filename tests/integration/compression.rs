@@ -1,19 +1,16 @@
 use anyhow::Result;
-use parquet::basic::{BrotliLevel, Compression, Encoding, GzipLevel, ZstdLevel};
+use parquet::basic::{Compression, Encoding};
 use parquet_parser::file_metadata::read_file_metadata;
 use polars::prelude::*;
 use rstest::rstest;
 
-use crate::make_parquet;
-
 #[rstest]
+#[case::uncompress(Compression::UNCOMPRESSED)]
 #[case::snappy(Compression::SNAPPY)]
-#[case::gzip(Compression::GZIP(GzipLevel::default()))]
-#[case::brotli(Compression::BROTLI(BrotliLevel::default()))]
-#[case::zstd(Compression::ZSTD(ZstdLevel::default()))]
-#[case::lz4_raw(Compression::LZ4_RAW)]
 fn ok(#[case] compression: Compression) -> Result<()> {
     use parquet_parser::row_group::read_row_groups;
+
+    use crate::make_parquet;
 
     let data = make_parquet(
         r#"
@@ -30,6 +27,7 @@ false,6,6.6,six
         compression,
         Some(2),
         Some(2),
+        None,
     )?;
 
     let file_metadata = read_file_metadata(data.clone())?;

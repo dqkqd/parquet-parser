@@ -8,6 +8,39 @@ use parquet_parser::{data_page::read_data_pages, file_metadata::read_file_metada
 use crate::make_parquet;
 
 #[test]
+fn step03_01_read_one_page() -> Result<()> {
+    let parquet_data = make_parquet(
+        r#"
+my_col
+1
+2
+3
+"#,
+        false,
+        Encoding::PLAIN,
+        Compression::UNCOMPRESSED,
+        None,
+        None,
+        None,
+    )?;
+    let file_metadata = read_file_metadata(parquet_data.clone())?;
+
+    let column_metadata = file_metadata.row_groups[0].columns[0]
+        .meta_data
+        .as_ref()
+        .unwrap();
+    let data_pages = read_data_pages(parquet_data.clone(), column_metadata)?;
+    assert_eq!(data_pages.data_pages.len(), 1);
+    assert_eq!(data_pages.data_pages[0].num_values(), 3);
+    assert_eq!(
+        data_pages.data_pages[0].encoded_values.as_ref(),
+        [1i64.as_bytes(), 2i64.as_bytes(), 3i64.as_bytes()].concat()
+    );
+
+    Ok(())
+}
+
+#[test]
 fn one_page() -> Result<()> {
     let parquet_data = make_parquet(
         r#"

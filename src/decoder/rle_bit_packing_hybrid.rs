@@ -63,7 +63,7 @@ pub fn rle_bit_packing_hybrid_decode(
 }
 
 // TODO: docs
-#[allow(unused_variables)]
+#[allow(unused)]
 fn rle_bit_packing_hybrid_run_decode(
     encoded_data: &mut Bytes,
     parquet_type: Type,

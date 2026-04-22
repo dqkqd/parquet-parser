@@ -72,9 +72,7 @@ false
 #[test]
 fn many_runs() -> Result<()> {
     let run_len = 3456;
-    let boolean_data: Vec<bool> = (0..run_len)
-        .map(|i| i % 2 == 0)
-        .collect();
+    let boolean_data: Vec<bool> = (0..run_len).map(|i| i % 2 == 0).collect();
 
     let data: Vec<&str> = std::iter::once("boolean") // header
         .chain(
