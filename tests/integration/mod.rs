@@ -1,4 +1,4 @@
-// mod step01_magic;
+mod step01_magic;
 // mod step02_file_metadata;
 // mod step03_data_page;
 // mod step04_data_pages;
