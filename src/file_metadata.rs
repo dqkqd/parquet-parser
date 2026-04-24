@@ -3,10 +3,9 @@ use bytes::Bytes;
 
 use crate::format::FileMetaData;
 
-/// Decoded parquet file and return [`FileMetaData`].
+/// Read a parquet file's [`FileMetaData`].
 ///
 /// ```text
-/// 4-byte magic number "PAR1"
 /// ...
 /// File Metadata
 /// 4-byte length in bytes of file metadata (little endian)

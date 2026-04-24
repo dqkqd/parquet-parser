@@ -5154,7 +5154,7 @@ pub struct OffsetIndex {
   pub page_locations: Vec<PageLocation>,
   /// Unencoded/uncompressed size for BYTE_ARRAY types.
   /// 
-  /// See documention for unencoded_byte_array_data_bytes in SizeStatistics for
+  /// See documentation for unencoded_byte_array_data_bytes in SizeStatistics for
   /// more details on this field.
   pub unencoded_byte_array_data_bytes: Option<Vec<i64>>,
 }

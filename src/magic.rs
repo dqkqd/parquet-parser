@@ -1,13 +1,11 @@
 use anyhow::Result;
 use bytes::Bytes;
 
-/// Ensure the header and footer contain magic number `PAR1`.
+/// Ensure we are reading a parquet file by checking the header and footer containing magic number `PAR1`
 ///
 /// ```text
 /// 4-byte magic number "PAR1"
-/// ...
-/// File Metadata
-/// 4-byte length in bytes of file metadata (little endian)
+/// <data>
 /// 4-byte magic number "PAR1"
 /// ```
 ///

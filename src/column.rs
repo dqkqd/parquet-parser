@@ -5,13 +5,13 @@ use polars::prelude::*;
 use crate::format::{ColumnChunk, ColumnMetaData};
 
 /// Get column name from [`ColumnMetaData::path_in_schema`].
-/// TODO: docs
+/// Since our parser doesn't handle nested data type, `path_in_schema` always contains has length 1.
 #[allow(unused)]
 fn column_name(column_metadata: &ColumnMetaData) -> String {
     column_metadata.path_in_schema.join(".")
 }
 
-/// TODO: docs
+/// Convert a vector of [`Scalar`] to [`Column`].
 #[allow(unused)]
 fn column_from_scalars(scalars: Vec<Scalar>, column_name: &str) -> Result<Column> {
     let values: Vec<AnyValue<'_>> = scalars
@@ -23,8 +23,12 @@ fn column_from_scalars(scalars: Vec<Scalar>, column_name: &str) -> Result<Column
     Ok(column)
 }
 
-/// Read a [`Column`] from a parquet data.
-/// TODO: docs
+/// Read [`Column`] from a parquet file based on [`ColumnChunk`]'s metadata.
+///
+/// A column chunk contains multiple pages, this functions need to get all of them
+/// and decode each page individually.
+///
+/// TODO: diagram contains a column chunk with multiple columns
 #[allow(unused_variables)]
 pub fn read_column(data: Bytes, column_chunk: &ColumnChunk) -> Result<Column> {
     let column_metadata = column_chunk
@@ -33,6 +37,6 @@ pub fn read_column(data: Bytes, column_chunk: &ColumnChunk) -> Result<Column> {
         .expect("read_column: missing column metadata");
     // You should:
     // - Get all the pages using `read_column_data_pages`
-    // - Decode all the pages using appropriate decoder into `scalars`
+    // - Decode all the pages into `scalars`
     column_from_scalars(vec![], &column_name(column_metadata))
 }

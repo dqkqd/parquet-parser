@@ -4,7 +4,9 @@ use polars::prelude::*;
 
 use crate::format::Type;
 
-/// Plain decoding
+/// Plain decoding.
+///
+/// The parser currently supports these data type types. For [`Type::BYTE_ARRAY`] we always treat it as string.
 ///
 /// - BOOLEAN: Bit Packed, LSB first
 /// - INT32: 4 bytes little endian
@@ -28,8 +30,14 @@ pub fn plain_decode(
         Type::INT64 => todo!(),
         Type::FLOAT => todo!(),
         Type::DOUBLE => todo!(),
-        Type::BYTE_ARRAY => todo!(),
-        Type::BOOLEAN => todo!("Plain decoder: unsupported boolean for now, implement later"),
-        _ => unimplemented!("Plain decoder: unsupported data type {:?}", parquet_type),
+        Type::BYTE_ARRAY => {
+            // To avoid messing with unicode data, we assume
+            // the string can be parsed from raw utf8 bytes without error.
+            // For example, this code is never panicking
+            // let string_data = String::from_uft8(vec8_data).unwrap();
+            todo!()
+        }
+        Type::BOOLEAN => todo!("plain_decode: unsupported boolean for now, implement later"),
+        _ => unimplemented!("plain_decode: unsupported data type {:?}", parquet_type),
     }
 }
