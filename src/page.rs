@@ -1,7 +1,10 @@
 use anyhow::Result;
-use bytes::Bytes;
+use bytes::{Buf, Bytes};
 
-use crate::format::{ColumnMetaData, CompressionCodec, Encoding, PageHeader};
+use crate::{
+    format::{ColumnMetaData, CompressionCodec, Encoding, PageHeader, PageType},
+    thrift::read_thrift_metadata,
+};
 
 #[derive(Debug)]
 pub enum Page {
@@ -96,7 +99,29 @@ impl Page {
 /// and returns a [`Page`] and remaining bytes.
 #[allow(unused_variables)]
 pub fn read_page(data: Bytes, codec: CompressionCodec) -> Result<(Page, Bytes)> {
-    todo!("step03: read a single page data")
+    let (page_header, mut remaining) = read_thrift_metadata::<PageHeader>(data)?;
+    let mut page_data = remaining.split_to(page_header.compressed_page_size as usize);
+
+    let page = match page_header.type_ {
+        PageType::DATA_PAGE => {
+            // because the definition levels contains the length itself,
+            // we need to clone the data to avoid shifting its bytes.
+            let definition_levels_len = page_data.clone().get_u32_le() as usize;
+            let definition_levels = page_data.split_to(definition_levels_len + 4);
+
+            Page::DataPage {
+                page_header,
+                definition_levels,
+                encoded_values: page_data,
+            }
+        }
+        PageType::DICTIONARY_PAGE => {
+            todo!("read_page: handle read dictionary page in `step11: dictionary page` section")
+        }
+        page_type => unimplemented!("read_page: unsupported {:?}", page_type),
+    };
+
+    Ok((page, remaining))
 }
 
 /// Pages for a column chunk

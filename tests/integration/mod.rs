@@ -1,6 +1,6 @@
 mod step01_magic;
 mod step02_file_metadata;
-// mod step03_data_page;
+mod step03_data_page;
 // mod step04_data_pages;
 // mod step05_plain_decoder;
 // mod step06_column;
