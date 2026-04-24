@@ -16,6 +16,6 @@ use crate::format::FileMetaData;
 /// [file-format]: https://parquet.apache.org/docs/file-format/
 #[allow(unused_variables)]
 pub fn read_file_metadata(data: Bytes) -> Result<FileMetaData> {
-    // Use `crate::thrift::read_thrift_struct` to read thrift encoded data
+    // Use `crate::thrift::read_thrift_metadata` to read thrift encoded data
     todo!()
 }
