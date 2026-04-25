@@ -134,7 +134,21 @@ pub struct Pages {
 /// Read all [`Page`] for a given column chunk.
 ///
 /// All pages for a given column chunk are written back to back.
-#[allow(unused_variables)]
 pub fn read_pages(data: Bytes, column_metadata: &ColumnMetaData) -> Result<Pages> {
-    todo!("step04: read all pages for a given column chunk")
+    let offset = column_metadata.data_page_offset as usize;
+    let len = column_metadata.total_compressed_size as usize;
+
+    let mut pages_bytes = data.slice(offset..offset + len);
+    let mut data_pages = vec![];
+
+    while !pages_bytes.is_empty() {
+        let (page, remaining) = read_page(pages_bytes, column_metadata.codec)?;
+        data_pages.push(page);
+        pages_bytes = remaining;
+    }
+
+    Ok(Pages {
+        data_pages,
+        dictionary_page: None,
+    })
 }
