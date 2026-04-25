@@ -2,10 +2,13 @@ use anyhow::Result;
 use bytes::Bytes;
 use polars::prelude::*;
 
-use crate::format::{ColumnChunk, ColumnMetaData};
+use crate::{
+    decoder::decode_page,
+    format::{ColumnChunk, ColumnMetaData},
+    page::read_pages,
+};
 
 /// Convert a vector of [`Scalar`] to a [`Column`].
-#[allow(unused)]
 fn column_from_scalars(scalars: Vec<Scalar>, column_metadata: &ColumnMetaData) -> Result<Column> {
     let values: Vec<AnyValue<'_>> = scalars
         .into_iter()
@@ -23,7 +26,16 @@ fn column_from_scalars(scalars: Vec<Scalar>, column_metadata: &ColumnMetaData) -
 ///
 /// A column chunk contains multiple pages, this function extract all the pages,
 /// decodes them and returns the correct [`Column`] for a chunk.
-#[allow(unused_variables)]
 pub fn read_column(data: Bytes, column_chunk: &ColumnChunk) -> Result<Column> {
-    todo!("step06: implement read column")
+    let column_metadata = column_chunk
+        .meta_data
+        .as_ref()
+        .expect("read_column: missing column metadata");
+    let pages = read_pages(data, column_metadata)?;
+    let mut scalars = Vec::with_capacity(column_metadata.num_values as usize);
+    for page in pages.data_pages {
+        let decoded_scalars = decode_page(&page, column_metadata.type_, page.num_values())?;
+        scalars.extend(decoded_scalars);
+    }
+    column_from_scalars(scalars, column_metadata)
 }
