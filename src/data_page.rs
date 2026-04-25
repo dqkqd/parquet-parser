@@ -41,14 +41,17 @@ pub fn read_data_page(data: Bytes, codec: CompressionCodec) -> Result<(DataPage,
 }
 
 #[derive(Debug)]
-pub struct DataPages {
+pub struct ColumnDataPages {
     pub data_pages: Vec<DataPage>,
     pub dictionary_page: Option<DataPage>,
 }
 
 /// TODO: docs
-#[allow(unused_variables)]
-pub fn read_data_pages(data: Bytes, column_metadata: &ColumnMetaData) -> Result<DataPages> {
+#[allow(unused_variables)] // TODO: remove this
+pub fn read_column_data_pages(
+    data: Bytes,
+    column_metadata: &ColumnMetaData,
+) -> Result<ColumnDataPages> {
     todo!()
 }
 
