@@ -2,7 +2,7 @@ use anyhow::Result;
 use bytes::Bytes;
 use polars::prelude::*;
 
-use crate::format::{ColumnMetaData, Encoding, PageHeader, Type};
+use crate::format::{ColumnMetaData, CompressionCodec, Encoding, PageHeader, Type};
 
 /// TODO: docs
 #[derive(Debug)]
@@ -36,7 +36,7 @@ impl DataPage {
 ///   data_page_offset                                  compressed_page_size
 /// ```
 #[allow(unused_variables)]
-pub fn read_data_page(data: &mut Bytes, column_metadata: &ColumnMetaData) -> Result<DataPage> {
+pub fn read_data_page(data: Bytes, codec: CompressionCodec) -> Result<(DataPage, Bytes)> {
     todo!()
 }
 
