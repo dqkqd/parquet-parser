@@ -8,8 +8,8 @@ use crate::format::{ColumnMetaData, CompressionCodec, Encoding, PageHeader, Type
 #[derive(Debug)]
 pub struct DataPage {
     pub page_header: PageHeader,
-    pub encoded_values: Bytes,
     pub definition_levels: Option<Bytes>,
+    pub encoded_values: Bytes,
 }
 
 impl DataPage {
