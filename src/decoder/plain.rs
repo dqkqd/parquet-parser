@@ -12,15 +12,14 @@ use crate::format::Type;
 /// - FLOAT: 4 bytes IEEE little endian
 /// - DOUBLE: 8 bytes IEEE little endian
 /// - BYTE_ARRAY: length in 4 bytes little endian followed by the bytes contained in the array
-/// - FIXED_LEN_BYTE_ARRAY: the bytes contained in the array
 ///
 /// https://parquet.apache.org/docs/file-format/data-pages/encodings/#PLAIN
 #[allow(unused)]
 pub fn plain_decode(
-    encoded_data: &mut Bytes,
+    mut encoded_data: Bytes,
     parquet_type: Type,
     num_values: usize,
-) -> Result<Vec<Scalar>> {
+) -> Result<(Vec<Scalar>, Bytes)> {
     match parquet_type {
         Type::BOOLEAN => todo!("Handle bit packed later"),
         Type::INT32 => todo!(),
@@ -28,7 +27,6 @@ pub fn plain_decode(
         Type::FLOAT => todo!(),
         Type::DOUBLE => todo!(),
         Type::BYTE_ARRAY => todo!(),
-        Type::FIXED_LEN_BYTE_ARRAY => todo!(),
         _ => unimplemented!("Unsupported type {} for PLAIN encoding", parquet_type.0),
     }
 }

@@ -2,6 +2,7 @@
 // mod step02_file_metadata;
 // mod step03_data_page;
 // mod step04_column_data_pages;
+// mod step05_plain_decoder;
 // mod bit_packed_bit_width_decoder;
 // mod bit_packed_decoder;
 // mod column;
