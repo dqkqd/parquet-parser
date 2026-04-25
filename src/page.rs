@@ -116,7 +116,7 @@ pub fn read_page(data: Bytes, codec: CompressionCodec) -> Result<(Page, Bytes)> 
             }
         }
         PageType::DICTIONARY_PAGE => {
-            todo!("read_page: handle read dictionary page in `step11: dictionary page` section")
+            todo!("read_page: handle dictionary page")
         }
         page_type => unimplemented!("read_page: unsupported {:?}", page_type),
     };

@@ -1,5 +1,5 @@
 use anyhow::Result;
-use bytes::Bytes;
+use bytes::{Buf, Bytes};
 use polars::prelude::*;
 
 use crate::format::Type;
@@ -18,19 +18,45 @@ use crate::format::Type;
 /// This function decode the data into a vector of [`Scalar`].
 ///
 /// [plain encoding]: https://parquet.apache.org/docs/file-format/data-pages/encodings/#PLAIN
-#[allow(unused)]
 pub fn plain_decode(
     encoded_data: Bytes,
     parquet_type: Type,
     num_values: usize,
 ) -> Result<Vec<Scalar>> {
+    let mut encoded_data = encoded_data;
+    let mut scalars = Vec::with_capacity(num_values);
+
     match parquet_type {
-        Type::INT32 => todo!("step05: decode int32"),
-        Type::INT64 => todo!("step05: decode int64"),
-        Type::FLOAT => todo!("step05: decode float"),
-        Type::DOUBLE => todo!("step05: decode double"),
-        Type::BYTE_ARRAY => todo!("step05: decode string"),
+        Type::INT32 => {
+            for _ in 0..num_values {
+                scalars.push(Scalar::from(encoded_data.get_i32_le()))
+            }
+        }
+        Type::INT64 => {
+            for _ in 0..num_values {
+                scalars.push(Scalar::from(encoded_data.get_i64_le()))
+            }
+        }
+        Type::FLOAT => {
+            for _ in 0..num_values {
+                scalars.push(Scalar::from(encoded_data.get_f32_le()))
+            }
+        }
+        Type::DOUBLE => {
+            for _ in 0..num_values {
+                scalars.push(Scalar::from(encoded_data.get_f64_le()))
+            }
+        }
+        Type::BYTE_ARRAY => {
+            for _ in 0..num_values {
+                let size = encoded_data.get_u32_le() as usize;
+                let string = String::from_utf8(encoded_data.split_to(size).to_vec())?;
+                scalars.push(Scalar::from(PlSmallStr::from_string(string)))
+            }
+        }
         Type::BOOLEAN => todo!("step09: decode boolean"),
         _ => unimplemented!("plain_decode: unsupported data type {:?}", parquet_type),
     }
+
+    Ok(scalars)
 }
