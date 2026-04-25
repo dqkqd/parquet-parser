@@ -3,15 +3,14 @@
 // mod step03_data_page;
 // mod step04_column_data_pages;
 // mod step05_plain_decoder;
+// mod step06_column;
 // mod bit_packed_bit_width_decoder;
 // mod bit_packed_decoder;
-// mod column;
 // mod columns_null;
 // mod compression;
 // mod dictionary_data_page;
 // mod dictionary_decode_bit_packed;
 // mod dictionary_decode_rle;
-// mod plain_decoder;
 // mod rle_bit_packing_hybrid;
 // mod rle_bit_packing_hybrid_branch_bit_packing;
 // mod rle_bit_packing_hybrid_branch_rle;
