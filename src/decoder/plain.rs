@@ -21,12 +21,12 @@ pub fn plain_decode(
     num_values: usize,
 ) -> Result<(Vec<Scalar>, Bytes)> {
     match parquet_type {
-        Type::BOOLEAN => todo!("Handle bit packed later"),
         Type::INT32 => todo!(),
         Type::INT64 => todo!(),
         Type::FLOAT => todo!(),
         Type::DOUBLE => todo!(),
         Type::BYTE_ARRAY => todo!(),
-        _ => unimplemented!("Unsupported type {} for PLAIN encoding", parquet_type.0),
+        Type::BOOLEAN => todo!("Plain decoder: unsupported boolean for now, implement later"),
+        _ => unimplemented!("Plain decoder: unsupported data type {:?}", parquet_type),
     }
 }
