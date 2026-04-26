@@ -1,8 +1,7 @@
 use anyhow::Result;
 use bytes::Bytes;
-use polars::prelude::*;
 
-use crate::format::{ColumnMetaData, CompressionCodec, Encoding, PageHeader, Type};
+use crate::format::{ColumnMetaData, CompressionCodec, Encoding, PageHeader};
 
 /// TODO: docs
 #[derive(Debug)]
@@ -52,23 +51,5 @@ pub fn read_column_data_pages(
     data: Bytes,
     column_metadata: &ColumnMetaData,
 ) -> Result<ColumnDataPages> {
-    todo!()
-}
-
-/// TODO: docs
-#[allow(unused_variables)]
-pub fn decode_data_page(
-    data_page: DataPage,
-    parquet_type: Type,
-    num_values: usize,
-) -> Result<Vec<Scalar>> {
-    todo!()
-}
-
-#[allow(unused_variables)]
-pub fn decode_definition_levels(
-    definition_levels: Bytes,
-    num_values: usize,
-) -> Result<Vec<Scalar>> {
     todo!()
 }
