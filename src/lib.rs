@@ -1,6 +1,7 @@
 #[allow(clippy::all)]
 pub mod format;
 pub mod thrift;
+pub mod writer;
 
 pub mod column;
 pub mod compression;
