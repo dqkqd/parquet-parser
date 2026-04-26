@@ -2,7 +2,7 @@ use anyhow::Result;
 use bytes::{Buf, Bytes};
 use polars::prelude::*;
 
-use crate::format::Type;
+use crate::{decoder::bit_packed::bit_packed_decode, format::Type};
 
 /// Plain decoding.
 ///
@@ -54,7 +54,7 @@ pub fn plain_decode(
                 scalars.push(Scalar::from(PlSmallStr::from_string(string)))
             }
         }
-        Type::BOOLEAN => todo!("step09: decode boolean"),
+        Type::BOOLEAN => scalars = bit_packed_decode(encoded_data, Type::BOOLEAN, 1, num_values)?,
         _ => unimplemented!("plain_decode: unsupported data type {:?}", parquet_type),
     }
 
