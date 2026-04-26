@@ -25,7 +25,7 @@ use bytes::Bytes;
 ///  1100101  0001110  0100110  Remove the LSB
 ///  0100110  0001110  1100101  Reverse it and compute the actual value
 /// ```
-#[allow(unused_variables)]
+#[allow(unused)]
 pub fn uleb128_decode(encoded_data: &mut Bytes) -> Result<u64> {
     todo!()
 }

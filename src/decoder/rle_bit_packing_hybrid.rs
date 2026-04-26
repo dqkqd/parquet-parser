@@ -51,7 +51,7 @@ use crate::format::Type;
 /// java references: https://github.com/apache/parquet-java/blob/4c8f4d4b875259e2ece5f96c5ee90a03f78805ec/parquet-column/src/main/java/org/apache/parquet/column/values/rle/RunLengthBitPackingHybridEncoder.java#L163
 /// rust parquet references: https://github.com/apache/arrow-rs/blob/68851ef953fd771cc310203c446e54145d4407e1/parquet/src/encodings/rle.rs#L140
 /// ```
-#[allow(unused_variables)]
+#[allow(unused)]
 pub fn rle_bit_packing_hybrid_decode(
     encoded_data: &mut Bytes,
     parquet_type: Type,

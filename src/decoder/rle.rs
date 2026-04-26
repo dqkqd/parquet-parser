@@ -5,7 +5,7 @@ use polars::prelude::*;
 use crate::format::Type;
 
 /// TODO: docs
-#[allow(unused_variables)]
+#[allow(unused)]
 pub fn rle_decode(
     encoded_data: &mut Bytes,
     parquet_type: Type,

@@ -5,7 +5,7 @@ use polars::prelude::*;
 use crate::format::Type;
 
 /// TODO: docs. Only support boolean and u32
-#[allow(unused_variables)]
+#[allow(unused)]
 pub fn bit_packed_decode(
     encoded_data: &mut Bytes,
     parquet_type: Type,
