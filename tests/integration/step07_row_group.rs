@@ -48,6 +48,7 @@ i32,i64,float,double,string
         "double" => [1.1f64, 2.2f64, 3.3f64, 4.4f64, 5.5f64, 6.6f64],
         "string" => ["one", "two", "three", "four", "five", "six"],
     )?;
+    assert_eq!(df.schema(), expected.schema());
     assert_eq!(df, expected);
 
     Ok(())
@@ -81,7 +82,7 @@ i32,i64,float,double,string
 
     let file_metadata = read_file_metadata(data.clone())?;
 
-    let df = read_row_groups(data, &file_metadata.row_groups)?;
+    let df = read_row_groups(data, &file_metadata)?;
     let expected = df!(
         "i32" => [1i32, 2i32, 3i32, 4i32, 5i32, 6i32],
         "i64" => [1i64, 2i64, 3i64, 4i64, 5i64, 6i64],
@@ -89,6 +90,7 @@ i32,i64,float,double,string
         "double" => [1.1f64, 2.2f64, 3.3f64, 4.4f64, 5.5f64, 6.6f64],
         "string" => ["one", "two", "three", "four", "five", "six"],
     )?;
+    assert_eq!(df.schema(), expected.schema());
     assert_eq!(df, expected);
 
     Ok(())

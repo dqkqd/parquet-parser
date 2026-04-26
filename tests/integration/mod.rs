@@ -4,6 +4,7 @@
 // mod step04_column_data_pages;
 // mod step05_plain_decoder;
 // mod step06_column;
+// mod step07_row_group;
 // mod bit_packed_bit_width_decoder;
 // mod bit_packed_decoder;
 // mod columns_null;
@@ -16,5 +17,4 @@
 // mod rle_bit_packing_hybrid_branch_rle;
 // mod rle_bit_width_decoder;
 // mod rle_decoder;
-// mod row_group;
 // mod uleb128_decoder;

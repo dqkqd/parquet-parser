@@ -2,7 +2,7 @@ use anyhow::Result;
 use bytes::Bytes;
 use polars::prelude::*;
 
-use crate::format::RowGroup;
+use crate::format::{FileMetaData, RowGroup};
 
 /// Read a [`DataFrame`] from [`RowGroup`]
 #[allow(unused_variables)]
@@ -12,6 +12,6 @@ pub fn read_row_group(data: Bytes, row_group: &RowGroup) -> Result<DataFrame> {
 
 /// Read a [`DataFrame`] from a vector of [`RowGroup`].
 #[allow(unused_variables)]
-pub fn read_row_groups(data: Bytes, row_groups: &[RowGroup]) -> Result<DataFrame> {
+pub fn read_row_groups(data: Bytes, file_metadata: &FileMetaData) -> Result<DataFrame> {
     todo!()
 }
