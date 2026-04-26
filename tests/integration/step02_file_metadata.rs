@@ -1,12 +1,11 @@
 use anyhow::Result;
-use parquet::basic::{Compression, Encoding};
 use parquet_parser::file_metadata::read_file_metadata;
 
-use crate::make_parquet;
+use crate::make_parquet_bytes;
 
 #[test]
 fn file_metadata() -> Result<()> {
-    let parquet_data = make_parquet(
+    let parquet_data = make_parquet_bytes(
         r#"
 col1,col2
 1,one
@@ -15,12 +14,7 @@ col1,col2
 4,four
 5,five
 "#,
-        false,
-        Encoding::PLAIN,
-        Compression::UNCOMPRESSED,
-        None,
-        None,
-        None,
+        &[],
     )?;
     let file_metadata = read_file_metadata(parquet_data)?;
     assert_eq!(file_metadata.version, 1);

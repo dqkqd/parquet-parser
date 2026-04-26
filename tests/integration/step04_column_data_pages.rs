@@ -1,29 +1,21 @@
 use anyhow::Result;
-use parquet::{
-    basic::{Compression, Encoding},
-    data_type::AsBytes,
-};
+use parquet::data_type::AsBytes;
 use parquet_parser::{
     data_page::read_column_data_pages, file_metadata::read_file_metadata, format::PageType,
 };
 
-use crate::make_parquet;
+use crate::make_parquet_bytes;
 
 #[test]
 fn column_contains_one_page() -> Result<()> {
-    let parquet_data = make_parquet(
+    let parquet_data = make_parquet_bytes(
         r#"
 my_col
 1
 2
 3
 "#,
-        false,
-        Encoding::PLAIN,
-        Compression::UNCOMPRESSED,
-        None,
-        None,
-        None,
+        &[],
     )?;
     let file_metadata = read_file_metadata(parquet_data.clone())?;
 
@@ -67,7 +59,7 @@ my_col
 #[test]
 fn column_contains_many_pages() -> Result<()> {
     // create a parquet data with two pages
-    let parquet_data = make_parquet(
+    let parquet_data = make_parquet_bytes(
         r#"
 my_col
 1
@@ -75,12 +67,7 @@ my_col
 3
 4
 "#,
-        false,
-        Encoding::PLAIN,
-        Compression::UNCOMPRESSED,
-        Some(2),
-        None,
-        None,
+        &[&["--rows-per-page", "2"]],
     )?;
     let file_metadata = read_file_metadata(parquet_data.clone())?;
 

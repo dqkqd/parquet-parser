@@ -1,30 +1,23 @@
-use std::collections::HashMap;
 
 use anyhow::Result;
-use parquet::basic::{Compression, Encoding};
 use parquet_parser::{
     data_page::read_column_data_pages, decoder::decode_data_page,
     file_metadata::read_file_metadata, format::Type,
 };
 use polars::prelude::*;
 
-use crate::make_parquet;
+use crate::make_parquet_bytes;
 
 #[test]
 fn i32_ok() -> Result<()> {
-    let parquet_data = make_parquet(
+    let parquet_data = make_parquet_bytes(
         r#"
 i32
 10
 20
 30
 "#,
-        false,
-        Encoding::PLAIN,
-        Compression::UNCOMPRESSED,
-        None,
-        None,
-        Some(HashMap::from([("i32", Type::INT32)])),
+        &[&["--dtypes", "i32=int32"]],
     )?;
     let file_metadata = read_file_metadata(parquet_data.clone())?;
 
@@ -50,19 +43,14 @@ i32
 
 #[test]
 fn i32_too_many_values() -> Result<()> {
-    let parquet_data = make_parquet(
+    let parquet_data = make_parquet_bytes(
         r#"
 i32
 10
 20
 30
 "#,
-        false,
-        Encoding::PLAIN,
-        Compression::UNCOMPRESSED,
-        None,
-        None,
-        Some(HashMap::from([("i32", Type::INT32)])),
+        &[&["--dtypes", "i32=int32"]],
     )?;
     let file_metadata = read_file_metadata(parquet_data.clone())?;
 
@@ -80,19 +68,14 @@ i32
 
 #[test]
 fn i64_ok() -> Result<()> {
-    let parquet_data = make_parquet(
+    let parquet_data = make_parquet_bytes(
         r#"
 i64
 10
 20
 30
 "#,
-        false,
-        Encoding::PLAIN,
-        Compression::UNCOMPRESSED,
-        None,
-        None,
-        Some(HashMap::from([("i64", Type::INT64)])),
+        &[&["--dtypes", "i64=int64"]],
     )?;
     let file_metadata = read_file_metadata(parquet_data.clone())?;
 
@@ -118,19 +101,14 @@ i64
 
 #[test]
 fn i64_too_many_values() -> Result<()> {
-    let parquet_data = make_parquet(
+    let parquet_data = make_parquet_bytes(
         r#"
 i64
 10
 20
 30
 "#,
-        false,
-        Encoding::PLAIN,
-        Compression::UNCOMPRESSED,
-        None,
-        None,
-        Some(HashMap::from([("i64", Type::INT64)])),
+        &[&["--dtypes", "i64=int64"]],
     )?;
     let file_metadata = read_file_metadata(parquet_data.clone())?;
 
@@ -148,19 +126,14 @@ i64
 
 #[test]
 fn float_ok() -> Result<()> {
-    let parquet_data = make_parquet(
+    let parquet_data = make_parquet_bytes(
         r#"
 float
 10
 20
 30
 "#,
-        false,
-        Encoding::PLAIN,
-        Compression::UNCOMPRESSED,
-        None,
-        None,
-        Some(HashMap::from([("float", Type::FLOAT)])),
+        &[&["--dtypes", "float=float"]],
     )?;
     let file_metadata = read_file_metadata(parquet_data.clone())?;
 
@@ -186,19 +159,14 @@ float
 
 #[test]
 fn float_too_many_values() -> Result<()> {
-    let parquet_data = make_parquet(
+    let parquet_data = make_parquet_bytes(
         r#"
 float
 10
 20
 30
 "#,
-        false,
-        Encoding::PLAIN,
-        Compression::UNCOMPRESSED,
-        None,
-        None,
-        Some(HashMap::from([("float", Type::FLOAT)])),
+        &[&["--dtypes", "float=float"]],
     )?;
     let file_metadata = read_file_metadata(parquet_data.clone())?;
 
@@ -216,19 +184,14 @@ float
 
 #[test]
 fn double_ok() -> Result<()> {
-    let parquet_data = make_parquet(
+    let parquet_data = make_parquet_bytes(
         r#"
 double
 10
 20
 30
 "#,
-        false,
-        Encoding::PLAIN,
-        Compression::UNCOMPRESSED,
-        None,
-        None,
-        Some(HashMap::from([("double", Type::DOUBLE)])),
+        &[&["--dtypes", "double=double"]],
     )?;
     let file_metadata = read_file_metadata(parquet_data.clone())?;
 
@@ -254,19 +217,14 @@ double
 
 #[test]
 fn double_too_many_values() -> Result<()> {
-    let parquet_data = make_parquet(
+    let parquet_data = make_parquet_bytes(
         r#"
 double
 10
 20
 30
 "#,
-        false,
-        Encoding::PLAIN,
-        Compression::UNCOMPRESSED,
-        None,
-        None,
-        Some(HashMap::from([("double", Type::DOUBLE)])),
+        &[&["--dtypes", "double=double"]],
     )?;
     let file_metadata = read_file_metadata(parquet_data.clone())?;
 
@@ -284,19 +242,14 @@ double
 
 #[test]
 fn string_ok() -> Result<()> {
-    let parquet_data = make_parquet(
+    let parquet_data = make_parquet_bytes(
         r#"
 string
 one
 two
 three
 "#,
-        false,
-        Encoding::PLAIN,
-        Compression::UNCOMPRESSED,
-        None,
-        None,
-        Some(HashMap::from([("string", Type::BYTE_ARRAY)])),
+        &[&["--dtypes", "string=string"]],
     )?;
     let file_metadata = read_file_metadata(parquet_data.clone())?;
 
@@ -322,19 +275,14 @@ three
 
 #[test]
 fn string_too_many_values() -> Result<()> {
-    let parquet_data = make_parquet(
+    let parquet_data = make_parquet_bytes(
         r#"
 string
 one
 two
 three
 "#,
-        false,
-        Encoding::PLAIN,
-        Compression::UNCOMPRESSED,
-        None,
-        None,
-        Some(HashMap::from([("string", Type::BYTE_ARRAY)])),
+        &[&["--dtypes", "string=string"]],
     )?;
     let file_metadata = read_file_metadata(parquet_data.clone())?;
 

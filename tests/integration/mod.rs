@@ -5,6 +5,7 @@
 // mod step05_plain_decoder;
 // mod step06_column;
 // mod step07_row_group;
+// mod step08_parquet_file;
 // mod bit_packed_bit_width_decoder;
 // mod bit_packed_decoder;
 // mod columns_null;

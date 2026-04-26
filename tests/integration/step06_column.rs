@@ -1,15 +1,12 @@
-use std::collections::HashMap;
-
 use anyhow::Result;
-use parquet::basic::{Compression, Encoding};
-use parquet_parser::{column::read_column, file_metadata::read_file_metadata, format::Type};
+use parquet_parser::{column::read_column, file_metadata::read_file_metadata};
 use polars::prelude::*;
 
-use crate::make_parquet;
+use crate::make_parquet_bytes;
 
 #[test]
 fn i32() -> Result<()> {
-    let data = make_parquet(
+    let data = make_parquet_bytes(
         r#"
 my_col
 1
@@ -19,12 +16,7 @@ my_col
 5
 6
 "#,
-        false,
-        Encoding::PLAIN,
-        Compression::UNCOMPRESSED,
-        Some(2),
-        None,
-        Some(HashMap::from([("my_col", Type::INT32)])),
+        &[&["--dtypes", "my_col=int32"]],
     )?;
 
     let file_metadata = read_file_metadata(data.clone())?;
@@ -41,7 +33,7 @@ my_col
 
 #[test]
 fn i64() -> Result<()> {
-    let data = make_parquet(
+    let data = make_parquet_bytes(
         r#"
 my_col
 1
@@ -51,12 +43,7 @@ my_col
 5
 6
 "#,
-        false,
-        Encoding::PLAIN,
-        Compression::UNCOMPRESSED,
-        Some(2),
-        None,
-        Some(HashMap::from([("my_col", Type::INT64)])),
+        &[&["--dtypes", "my_col=int64"]],
     )?;
 
     let file_metadata = read_file_metadata(data.clone())?;
@@ -73,7 +60,7 @@ my_col
 
 #[test]
 fn float() -> Result<()> {
-    let data = make_parquet(
+    let data = make_parquet_bytes(
         r#"
 my_col
 1.1
@@ -83,12 +70,7 @@ my_col
 5.5
 6.6
 "#,
-        false,
-        Encoding::PLAIN,
-        Compression::UNCOMPRESSED,
-        Some(2),
-        None,
-        Some(HashMap::from([("my_col", Type::FLOAT)])),
+        &[&["--dtypes", "my_col=float"]],
     )?;
 
     let file_metadata = read_file_metadata(data.clone())?;
@@ -108,7 +90,7 @@ my_col
 
 #[test]
 fn double() -> Result<()> {
-    let data = make_parquet(
+    let data = make_parquet_bytes(
         r#"
 my_col
 1.1
@@ -118,12 +100,7 @@ my_col
 5.5
 6.6
 "#,
-        false,
-        Encoding::PLAIN,
-        Compression::UNCOMPRESSED,
-        Some(2),
-        None,
-        Some(HashMap::from([("my_col", Type::DOUBLE)])),
+        &[&["--dtypes", "my_col=double"]],
     )?;
 
     let file_metadata = read_file_metadata(data.clone())?;
@@ -143,7 +120,7 @@ my_col
 
 #[test]
 fn string() -> Result<()> {
-    let data = make_parquet(
+    let data = make_parquet_bytes(
         r#"
 my_col
 one
@@ -153,12 +130,7 @@ four
 five
 six
 "#,
-        false,
-        Encoding::PLAIN,
-        Compression::UNCOMPRESSED,
-        Some(2),
-        None,
-        Some(HashMap::from([("my_col", Type::BYTE_ARRAY)])),
+        &[&["--dtypes", "my_col=string"]],
     )?;
 
     let file_metadata = read_file_metadata(data.clone())?;

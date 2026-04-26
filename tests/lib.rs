@@ -1,37 +1,39 @@
 mod integration;
 
-use std::collections::HashMap;
+use std::io::Read;
+use std::io::Write;
+use std::process::Command;
 
 use anyhow::Result;
+use anyhow::bail;
 use bytes::Bytes;
-use parquet::basic::{Compression, Encoding};
-use parquet_parser::{format::Type, writer::write_parquet};
+use tempfile::NamedTempFile;
 
-pub fn make_parquet(
-    data: &str,
-    dictionary_enabled: bool,
-    encoding: Encoding,
-    compression: Compression,
-    rows_per_page: Option<usize>,
-    rows_per_group: Option<usize>,
-    data_types_override: Option<HashMap<&str, Type>>,
-) -> Result<Bytes> {
-    let input = data.trim().as_bytes().to_vec();
-    let data_types_override = data_types_override.map(|dtypes| {
-        let dtypes: HashMap<String, Type> = dtypes
-            .into_iter()
-            .map(|(k, v)| (k.to_string(), v))
-            .collect();
-        dtypes
-    });
-    let out = write_parquet(
-        input,
-        dictionary_enabled,
-        encoding,
-        compression,
-        rows_per_page,
-        rows_per_group,
-        data_types_override,
-    )?;
-    Ok(Bytes::from(out))
+pub fn make_parquet_file(data: &str, args: &[&[&'static str]]) -> Result<NamedTempFile> {
+    let mut csv_file = NamedTempFile::new()?;
+    csv_file.write_all(data.trim().as_bytes())?;
+
+    let parquet_file = NamedTempFile::new()?;
+
+    let mut cmd = Command::new(env!("CARGO_BIN_EXE_write"));
+    let mut cmd = cmd
+        .arg(csv_file.path().to_str().unwrap())
+        .arg(parquet_file.path().to_str().unwrap());
+    for args in args {
+        cmd = cmd.args(*args);
+    }
+    let output = cmd.output().expect("write must success");
+    if !output.status.success() {
+        let stderr = String::from_utf8(output.stderr)?;
+        bail!("Error write to parquet file: {stderr}");
+    }
+
+    Ok(parquet_file)
+}
+
+pub fn make_parquet_bytes(data: &str, args: &[&[&'static str]]) -> Result<Bytes> {
+    let mut output_file = make_parquet_file(data, args)?;
+    let mut output = Vec::new();
+    output_file.read_to_end(&mut output)?;
+    Ok(Bytes::from(output))
 }
