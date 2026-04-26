@@ -1,0 +1,12 @@
+{
+  "line-length": {
+    "line_length": 100,
+  },
+  "no-inline-html": false,
+  "MD049": {
+    "style": "asterisk",
+  },
+  "MD050": {
+    "style": "asterisk",
+  },
+}

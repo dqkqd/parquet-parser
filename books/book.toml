@@ -1,0 +1,10 @@
+[book]
+title = "Write you a parquet parser"
+authors = ["Khanh Duong"]
+language = "en"
+
+[output.html]
+additional-css = ["custom.css"]
+
+[output.html.playground]
+runnable = false

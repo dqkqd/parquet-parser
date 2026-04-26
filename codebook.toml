@@ -1,0 +1,8 @@
+words = [
+    "leb",
+    "lsb",
+    "msb",
+    "rle",
+    "uleb",
+    "varint",
+]

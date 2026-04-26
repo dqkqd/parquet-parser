@@ -6,6 +6,11 @@ books-test:
 books-run:
     - mdbook serve --open
 
+[working-directory('books')]
+books-clean:
+    - bash clean.sh
+
+
 lint:
     - typos
     - cargo clippy --all-targets
@@ -19,3 +24,5 @@ test: books-test
 
 test-all:
     - bash ./test-all-solutions.sh
+
+

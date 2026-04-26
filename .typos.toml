@@ -1,2 +1,2 @@
 [files]
-extend-exclude = ["src/format.rs"]
+extend-exclude = ["src/format.rs", "books/book.excalidraw"]
