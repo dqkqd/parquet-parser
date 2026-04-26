@@ -1,222 +1,351 @@
+use std::collections::HashMap;
+
 use anyhow::Result;
-use bytes::Bytes;
-use parquet::data_type::AsBytes;
-use parquet_parser::{decoder::plain::plain_decode, format::Type};
+use parquet::basic::{Compression, Encoding};
+use parquet_parser::{
+    data_page::read_column_data_pages, decoder::decode_data_page,
+    file_metadata::read_file_metadata, format::Type,
+};
 use polars::prelude::*;
+
+use crate::make_parquet;
 
 #[test]
 fn i32_ok() -> Result<()> {
-    let data = Bytes::from(
-        [
-            1234567i32.as_bytes(),   // 4 bytes
-            789101112i32.as_bytes(), // 4 bytes
-        ]
-        .concat(),
-    );
-    let (decoded, remaining) = plain_decode(data, Type::INT32, 2)?;
+    let parquet_data = make_parquet(
+        r#"
+i32
+10
+20
+30
+"#,
+        false,
+        Encoding::PLAIN,
+        Compression::UNCOMPRESSED,
+        None,
+        None,
+        Some(HashMap::from([("i32", Type::INT32)])),
+    )?;
+    let file_metadata = read_file_metadata(parquet_data.clone())?;
+
+    let column_metadata = file_metadata.row_groups[0].columns[0]
+        .meta_data
+        .as_ref()
+        .unwrap();
+    let mut column_data_pages = read_column_data_pages(parquet_data, column_metadata)?;
+    let data_page = column_data_pages.data_pages.pop().unwrap();
+
+    let decoded = decode_data_page(data_page, Type::INT32, 3)?;
     assert_eq!(
         decoded,
-        [Scalar::from(1234567i32), Scalar::from(789101112i32)]
+        [
+            Scalar::from(10i32),
+            Scalar::from(20i32),
+            Scalar::from(30i32)
+        ]
     );
-    assert!(remaining.is_empty());
+
     Ok(())
 }
 
 #[test]
 fn i32_too_many_values() -> Result<()> {
-    let data = Bytes::from(
-        [
-            1234567i32.as_bytes(),   // 4 bytes
-            789101112i32.as_bytes(), // 4 bytes
-        ]
-        .concat(),
-    );
-    assert!(plain_decode(data, Type::INT32, 4).is_err());
-    Ok(())
-}
+    let parquet_data = make_parquet(
+        r#"
+i32
+10
+20
+30
+"#,
+        false,
+        Encoding::PLAIN,
+        Compression::UNCOMPRESSED,
+        None,
+        None,
+        Some(HashMap::from([("i32", Type::INT32)])),
+    )?;
+    let file_metadata = read_file_metadata(parquet_data.clone())?;
 
-#[test]
-fn i32_missing_bytes() -> Result<()> {
-    let data = Bytes::from(
-        [
-            123u8.as_bytes(), // 1 byte
-        ]
-        .concat(),
-    );
-    assert!(plain_decode(data, Type::INT32, 1).is_err());
+    let column_metadata = file_metadata.row_groups[0].columns[0]
+        .meta_data
+        .as_ref()
+        .unwrap();
+    let mut column_data_pages = read_column_data_pages(parquet_data, column_metadata)?;
+    let data_page = column_data_pages.data_pages.pop().unwrap();
+
+    assert!(decode_data_page(data_page, Type::INT32, 4).is_err());
+
     Ok(())
 }
 
 #[test]
 fn i64_ok() -> Result<()> {
-    let data = Bytes::from(
-        [
-            1234567i64.as_bytes(),   // 8 bytes
-            789101112i64.as_bytes(), // 8 bytes
-        ]
-        .concat(),
-    );
-    let (decoded, remaining) = plain_decode(data, Type::INT64, 2)?;
+    let parquet_data = make_parquet(
+        r#"
+i64
+10
+20
+30
+"#,
+        false,
+        Encoding::PLAIN,
+        Compression::UNCOMPRESSED,
+        None,
+        None,
+        Some(HashMap::from([("i64", Type::INT64)])),
+    )?;
+    let file_metadata = read_file_metadata(parquet_data.clone())?;
+
+    let column_metadata = file_metadata.row_groups[0].columns[0]
+        .meta_data
+        .as_ref()
+        .unwrap();
+    let mut column_data_pages = read_column_data_pages(parquet_data, column_metadata)?;
+    let data_page = column_data_pages.data_pages.pop().unwrap();
+
+    let decoded = decode_data_page(data_page, Type::INT64, 3)?;
     assert_eq!(
         decoded,
-        [Scalar::from(1234567i64), Scalar::from(789101112i64)]
+        [
+            Scalar::from(10i64),
+            Scalar::from(20i64),
+            Scalar::from(30i64)
+        ]
     );
-    assert!(remaining.is_empty());
+
     Ok(())
 }
 
 #[test]
 fn i64_too_many_values() -> Result<()> {
-    let data = Bytes::from(
-        [
-            1234567i64.as_bytes(),   // 8 bytes
-            789101112i64.as_bytes(), // 8 bytes
-        ]
-        .concat(),
-    );
-    assert!(plain_decode(data, Type::INT64, 4).is_err());
-    Ok(())
-}
+    let parquet_data = make_parquet(
+        r#"
+i64
+10
+20
+30
+"#,
+        false,
+        Encoding::PLAIN,
+        Compression::UNCOMPRESSED,
+        None,
+        None,
+        Some(HashMap::from([("i64", Type::INT64)])),
+    )?;
+    let file_metadata = read_file_metadata(parquet_data.clone())?;
 
-#[test]
-fn i64_missing_bytes() -> Result<()> {
-    let data = Bytes::from(
-        [
-            123u8.as_bytes(), // 1 byte
-        ]
-        .concat(),
-    );
-    assert!(plain_decode(data, Type::INT64, 1).is_err());
+    let column_metadata = file_metadata.row_groups[0].columns[0]
+        .meta_data
+        .as_ref()
+        .unwrap();
+    let mut column_data_pages = read_column_data_pages(parquet_data, column_metadata)?;
+    let data_page = column_data_pages.data_pages.pop().unwrap();
+
+    assert!(decode_data_page(data_page, Type::INT64, 4).is_err());
+
     Ok(())
 }
 
 #[test]
 fn float_ok() -> Result<()> {
-    let data = Bytes::from(
-        [
-            123.4567f32.as_bytes(),    // 4 bytes
-            789.101_14_f32.as_bytes(), // 4 bytes
-        ]
-        .concat(),
-    );
-    let (decoded, remaining) = plain_decode(data, Type::FLOAT, 2)?;
+    let parquet_data = make_parquet(
+        r#"
+float
+10
+20
+30
+"#,
+        false,
+        Encoding::PLAIN,
+        Compression::UNCOMPRESSED,
+        None,
+        None,
+        Some(HashMap::from([("float", Type::FLOAT)])),
+    )?;
+    let file_metadata = read_file_metadata(parquet_data.clone())?;
+
+    let column_metadata = file_metadata.row_groups[0].columns[0]
+        .meta_data
+        .as_ref()
+        .unwrap();
+    let mut column_data_pages = read_column_data_pages(parquet_data, column_metadata)?;
+    let data_page = column_data_pages.data_pages.pop().unwrap();
+
+    let decoded = decode_data_page(data_page, Type::FLOAT, 3)?;
     assert_eq!(
         decoded,
-        [Scalar::from(123.4567f32), Scalar::from(789.101_14_f32)]
+        [
+            Scalar::from(10f32),
+            Scalar::from(20f32),
+            Scalar::from(30f32)
+        ]
     );
-    assert!(remaining.is_empty());
+
     Ok(())
 }
 
 #[test]
 fn float_too_many_values() -> Result<()> {
-    let data = Bytes::from(
-        [
-            123.4567f32.as_bytes(),    // 4 bytes
-            789.101_14_f32.as_bytes(), // 4 bytes
-        ]
-        .concat(),
-    );
-    assert!(plain_decode(data, Type::FLOAT, 4).is_err());
-    Ok(())
-}
+    let parquet_data = make_parquet(
+        r#"
+float
+10
+20
+30
+"#,
+        false,
+        Encoding::PLAIN,
+        Compression::UNCOMPRESSED,
+        None,
+        None,
+        Some(HashMap::from([("float", Type::FLOAT)])),
+    )?;
+    let file_metadata = read_file_metadata(parquet_data.clone())?;
 
-#[test]
-fn float_missing_bytes() -> Result<()> {
-    let data = Bytes::from(
-        [
-            123u8.as_bytes(), // 1 byte
-        ]
-        .concat(),
-    );
-    assert!(plain_decode(data, Type::FLOAT, 1).is_err());
+    let column_metadata = file_metadata.row_groups[0].columns[0]
+        .meta_data
+        .as_ref()
+        .unwrap();
+    let mut column_data_pages = read_column_data_pages(parquet_data, column_metadata)?;
+    let data_page = column_data_pages.data_pages.pop().unwrap();
+
+    assert!(decode_data_page(data_page, Type::FLOAT, 4).is_err());
+
     Ok(())
 }
 
 #[test]
 fn double_ok() -> Result<()> {
-    let data = Bytes::from(
-        [
-            123.4567f64.as_bytes(),   // 8 bytes
-            789.101112f64.as_bytes(), // 8 bytes
-        ]
-        .concat(),
-    );
+    let parquet_data = make_parquet(
+        r#"
+double
+10
+20
+30
+"#,
+        false,
+        Encoding::PLAIN,
+        Compression::UNCOMPRESSED,
+        None,
+        None,
+        Some(HashMap::from([("double", Type::DOUBLE)])),
+    )?;
+    let file_metadata = read_file_metadata(parquet_data.clone())?;
 
-    let (decoded, remaining) = plain_decode(data, Type::DOUBLE, 2)?;
+    let column_metadata = file_metadata.row_groups[0].columns[0]
+        .meta_data
+        .as_ref()
+        .unwrap();
+    let mut column_data_pages = read_column_data_pages(parquet_data, column_metadata)?;
+    let data_page = column_data_pages.data_pages.pop().unwrap();
+
+    let decoded = decode_data_page(data_page, Type::DOUBLE, 3)?;
     assert_eq!(
         decoded,
-        [Scalar::from(123.4567f64), Scalar::from(789.101112f64)]
+        [
+            Scalar::from(10f64),
+            Scalar::from(20f64),
+            Scalar::from(30f64)
+        ]
     );
-    assert!(remaining.is_empty());
+
     Ok(())
 }
 
 #[test]
 fn double_too_many_values() -> Result<()> {
-    let data = Bytes::from(
-        [
-            123.4567f64.as_bytes(),   // 8 bytes
-            789.101112f64.as_bytes(), // 8 bytes
-        ]
-        .concat(),
-    );
-    assert!(plain_decode(data, Type::DOUBLE, 4).is_err());
-    Ok(())
-}
+    let parquet_data = make_parquet(
+        r#"
+double
+10
+20
+30
+"#,
+        false,
+        Encoding::PLAIN,
+        Compression::UNCOMPRESSED,
+        None,
+        None,
+        Some(HashMap::from([("double", Type::DOUBLE)])),
+    )?;
+    let file_metadata = read_file_metadata(parquet_data.clone())?;
 
-#[test]
-fn double_missing_bytes() -> Result<()> {
-    let data = Bytes::from(
-        [
-            123u8.as_bytes(), // 1 byte
-        ]
-        .concat(),
-    );
-    assert!(plain_decode(data, Type::DOUBLE, 1).is_err());
+    let column_metadata = file_metadata.row_groups[0].columns[0]
+        .meta_data
+        .as_ref()
+        .unwrap();
+    let mut column_data_pages = read_column_data_pages(parquet_data, column_metadata)?;
+    let data_page = column_data_pages.data_pages.pop().unwrap();
+
+    assert!(decode_data_page(data_page, Type::DOUBLE, 4).is_err());
+
     Ok(())
 }
 
 #[test]
 fn string_ok() -> Result<()> {
-    let data = Bytes::from(
-        [
-            5i32.to_le_bytes().as_slice(),
-            b"Hello".as_slice(),
-            6i32.to_le_bytes().as_slice(),
-            b"World!".as_slice(),
-        ]
-        .concat(),
-    );
+    let parquet_data = make_parquet(
+        r#"
+string
+one
+two
+three
+"#,
+        false,
+        Encoding::PLAIN,
+        Compression::UNCOMPRESSED,
+        None,
+        None,
+        Some(HashMap::from([("string", Type::BYTE_ARRAY)])),
+    )?;
+    let file_metadata = read_file_metadata(parquet_data.clone())?;
 
-    let (decoded, remaining) = plain_decode(data, Type::BYTE_ARRAY, 2)?;
+    let column_metadata = file_metadata.row_groups[0].columns[0]
+        .meta_data
+        .as_ref()
+        .unwrap();
+    let mut column_data_pages = read_column_data_pages(parquet_data, column_metadata)?;
+    let data_page = column_data_pages.data_pages.pop().unwrap();
+
+    let decoded = decode_data_page(data_page, Type::BYTE_ARRAY, 3)?;
     assert_eq!(
         decoded,
         [
-            Scalar::from(PlSmallStr::from_static("Hello")),
-            Scalar::from(PlSmallStr::from_static("World!")),
+            Scalar::from(PlSmallStr::from_static("one")),
+            Scalar::from(PlSmallStr::from_static("two")),
+            Scalar::from(PlSmallStr::from_static("three")),
         ]
     );
-    assert!(remaining.is_empty());
+
     Ok(())
 }
 
 #[test]
 fn string_too_many_values() -> Result<()> {
-    let data = Bytes::from([5i32.to_le_bytes().as_slice(), b"Hello".as_slice()].concat());
-    assert!(plain_decode(data, Type::BYTE_ARRAY, 2).is_err());
-    Ok(())
-}
+    let parquet_data = make_parquet(
+        r#"
+string
+one
+two
+three
+"#,
+        false,
+        Encoding::PLAIN,
+        Compression::UNCOMPRESSED,
+        None,
+        None,
+        Some(HashMap::from([("string", Type::BYTE_ARRAY)])),
+    )?;
+    let file_metadata = read_file_metadata(parquet_data.clone())?;
 
-#[test]
-fn string_string_too_short() -> Result<()> {
-    let data = Bytes::from(
-        [
-            8i32.to_le_bytes().as_slice(),
-            b"Missing".as_slice(), // Missing 1 byte, it should be error
-        ]
-        .concat(),
-    );
-    assert!(plain_decode(data, Type::BYTE_ARRAY, 1).is_err());
+    let column_metadata = file_metadata.row_groups[0].columns[0]
+        .meta_data
+        .as_ref()
+        .unwrap();
+    let mut column_data_pages = read_column_data_pages(parquet_data, column_metadata)?;
+    let data_page = column_data_pages.data_pages.pop().unwrap();
+
+    assert!(decode_data_page(data_page, Type::BYTE_ARRAY, 4).is_err());
+
     Ok(())
 }

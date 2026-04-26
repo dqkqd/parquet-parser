@@ -13,13 +13,16 @@ use crate::format::Type;
 /// - DOUBLE: 8 bytes IEEE little endian
 /// - BYTE_ARRAY: length in 4 bytes little endian followed by the bytes contained in the array
 ///
-/// https://parquet.apache.org/docs/file-format/data-pages/encodings/#PLAIN
+/// This function decode the data into a vector of [`Scalar`].
+///
+/// [plain encoding]: https://parquet.apache.org/docs/file-format/data-pages/encodings/#PLAIN
+/// TODO: do not return remaining.
 #[allow(unused)]
 pub fn plain_decode(
     mut encoded_data: Bytes,
     parquet_type: Type,
     num_values: usize,
-) -> Result<(Vec<Scalar>, Bytes)> {
+) -> Result<Vec<Scalar>> {
     match parquet_type {
         Type::INT32 => todo!(),
         Type::INT64 => todo!(),
