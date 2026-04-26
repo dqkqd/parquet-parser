@@ -6,8 +6,8 @@
 // mod step06_column;
 // mod step07_row_group;
 // mod step08_parquet_file;
+// mod step09_boolean_column;
 // mod bit_packed_bit_width_decoder;
-// mod bit_packed_decoder;
 // mod columns_null;
 // mod compression;
 // mod dictionary_data_page;
