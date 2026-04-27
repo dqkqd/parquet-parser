@@ -7,6 +7,7 @@
 // mod step07_row_group;
 // mod step08_parquet_file;
 // mod step09_boolean_column;
+// mod step10_01_uleb128_decoder;
 // mod bit_packed_bit_width_decoder;
 // mod columns_null;
 // mod compression;
@@ -18,4 +19,3 @@
 // mod rle_bit_packing_hybrid_branch_rle;
 // mod rle_bit_width_decoder;
 // mod rle_decoder;
-// mod uleb128_decoder;
