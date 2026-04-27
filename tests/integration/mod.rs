@@ -7,7 +7,7 @@ mod step06_column;
 mod step07_row_group;
 mod step08_parquet_file;
 mod step09_boolean_column;
-// mod step10_01_uleb128_decoder;
+mod step10_01_uleb128_decoder;
 // mod step10_02_run;
 // mod step10_03_runs;
 // mod step10_04_run_decoder;
