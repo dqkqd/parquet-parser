@@ -2,7 +2,10 @@ use anyhow::Result;
 use bytes::{Buf, Bytes};
 use polars::prelude::*;
 
-use crate::{decoder::uleb128::uleb128_decode, format::Type};
+use crate::{
+    decoder::{bit_packed::bit_packed_decode, rle::rle_decode, uleb128::uleb128_decode},
+    format::Type,
+};
 
 /// Enum represents a rle bit-packed hybrid run data.
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord)]
@@ -92,12 +95,22 @@ pub fn read_rle_bit_packed_runs(
 /// Decode a single rle bit-packed run.
 ///
 /// This function takes a run and returns a decoded vector of [`Scalar`].
-#[allow(unused)]
 pub fn rle_bit_packing_hybrid_run_decode(
     run: RleBitPackedRun,
     parquet_type: Type,
 ) -> Result<Vec<Scalar>> {
-    todo!("step10-04: decode a single run")
+    match run {
+        RleBitPackedRun::Rle {
+            run_len,
+            bit_width,
+            encoded_values,
+        } => rle_decode(encoded_values, parquet_type, bit_width, run_len),
+        RleBitPackedRun::BitPacked {
+            run_len,
+            bit_width,
+            encoded_values,
+        } => bit_packed_decode(encoded_values, parquet_type, bit_width, run_len),
+    }
 }
 
 /// RLE bit-packed hybrid decoding.

@@ -10,7 +10,7 @@ mod step09_boolean_column;
 mod step10_01_uleb128_decoder;
 mod step10_02_run;
 mod step10_03_runs;
-// mod step10_04_run_decoder;
+mod step10_04_run_decoder;
 // mod step10_05_runs_decoder;
 // mod step11_01_definition_levels_decoder;
 // mod step11_02_nulls_decoder;
