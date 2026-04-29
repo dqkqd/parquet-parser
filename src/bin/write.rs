@@ -46,6 +46,7 @@ struct Cli {
 fn parse_encoding(s: &str) -> Result<Encoding> {
     match s.trim() {
         "plain" => Ok(Encoding::PLAIN),
+        "rle" => Ok(Encoding::RLE),
         e => bail!("Unsupported encoding {e}, expected one of [plain]"),
     }
 }

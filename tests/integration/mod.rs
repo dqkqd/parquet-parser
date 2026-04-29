@@ -10,14 +10,11 @@
 // mod step10_01_uleb128_decoder;
 // mod step10_02_run_header_and_encoded_data;
 // mod step10_03_rle_decoder;
+// mod step10_04_single_run_decoder;
 // mod bit_packed_bit_width_decoder;
 // mod columns_null;
 // mod compression;
 // mod dictionary_data_page;
 // mod dictionary_decode_bit_packed;
 // mod dictionary_decode_rle;
-// mod rle_bit_packing_hybrid;
-// mod rle_bit_packing_hybrid_branch_bit_packing;
-// mod rle_bit_packing_hybrid_branch_rle;
 // mod rle_bit_width_decoder;
-// mod rle_decoder;
