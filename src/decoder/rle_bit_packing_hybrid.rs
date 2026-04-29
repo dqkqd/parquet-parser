@@ -126,7 +126,6 @@ pub fn rle_bit_packing_hybrid_run_decode(
 /// - A total values for a bit-packed run is less than or equal 504. This is followed by official java implementation: https://github.com/apache/parquet-java/blob/4c8f4d4b875259e2ece5f96c5ee90a03f78805ec/parquet-column/src/main/java/org/apache/parquet/column/values/rle/RunLengthBitPackingHybridEncoder.java#L101-L113
 ///
 /// *We don't need to care this if we just write a parser. But this is a useful information for writing tests.*
-#[allow(unused_variables)]
 pub fn rle_bit_packing_hybrid_decode(
     encoded_data: Bytes,
     parquet_type: Type,
@@ -134,5 +133,12 @@ pub fn rle_bit_packing_hybrid_decode(
     num_values: usize,
     prepend_length: bool,
 ) -> Result<Vec<Scalar>> {
-    todo!("step10-05: decode all runs")
+    let runs = read_rle_bit_packed_runs(encoded_data, bit_width, prepend_length)?;
+    let mut result = Vec::with_capacity(num_values);
+    for run in runs {
+        let scalars = rle_bit_packing_hybrid_run_decode(run, parquet_type)?;
+        result.extend(scalars);
+    }
+    result.truncate(num_values);
+    Ok(result)
 }
