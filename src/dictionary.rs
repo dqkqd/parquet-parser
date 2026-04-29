@@ -22,10 +22,18 @@ pub fn dictionary_entries(pages: &Pages, parquet_type: Type) -> Result<Option<Ve
 ///
 /// The dictionary entries might not exist if the page doesn't use dictionary encoding.
 /// In that case `dictionary_entries` is `None` and `indexes_or_values` is the actual column values.
-#[allow(unused_variables)]
 pub fn map_dictionary_entries(
     dictionary_entries: &Option<Vec<Scalar>>,
     indexes_or_values: Vec<Scalar>,
 ) -> Result<Vec<Scalar>> {
-    todo!("step12-02: map indexes in data page to the exact values")
+    let Some(dictionary_entries) = dictionary_entries else {
+        return Ok(indexes_or_values);
+    };
+    let mut scalars = Vec::with_capacity(indexes_or_values.len());
+    for index in indexes_or_values {
+        let index = index.into_value().try_extract::<i32>()? as usize;
+        let scalar = dictionary_entries[index].clone();
+        scalars.push(scalar)
+    }
+    Ok(scalars)
 }
