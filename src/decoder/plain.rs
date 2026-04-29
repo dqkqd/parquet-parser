@@ -18,10 +18,9 @@ use crate::format::Type;
 /// This function decode the data into a vector of [`Scalar`].
 ///
 /// [plain encoding]: https://parquet.apache.org/docs/file-format/data-pages/encodings/#PLAIN
-/// TODO: do not return remaining.
 #[allow(unused)]
 pub fn plain_decode(
-    mut encoded_data: Bytes,
+    encoded_data: Bytes,
     parquet_type: Type,
     num_values: usize,
 ) -> Result<Vec<Scalar>> {
@@ -34,7 +33,7 @@ pub fn plain_decode(
             // To avoid messing with unicode data, we assume
             // the string can be parsed from raw utf8 bytes without error.
             // For example, this code is never panicking
-            // let string_data = String::from_uft8(vec8_data).unwrap();
+            // let string_data = String::from_utf8(vec8_data).unwrap();
             todo!()
         }
         Type::BOOLEAN => todo!("plain_decode: unsupported boolean for now, implement later"),

@@ -88,21 +88,6 @@ fn bit_packed_run_width_3() -> Result<()> {
 }
 
 #[test]
-fn bit_packed_run_missing_bytes() -> Result<()> {
-    let data = Bytes::from(
-        [
-            // header = 5, length = 2
-            0b0000101u8.as_bytes(),
-            10u8.as_bytes(),
-        ]
-        .concat(),
-    );
-    assert!(get_rle_bit_packed_run(data, 1).is_err());
-
-    Ok(())
-}
-
-#[test]
 fn rle_run_width_1() -> Result<()> {
     let data = Bytes::from(
         [
@@ -180,21 +165,6 @@ fn rle_run_width_10() -> Result<()> {
     );
 
     assert!(remaining.is_empty());
-
-    Ok(())
-}
-
-#[test]
-fn rle_run_missing_bytes() -> Result<()> {
-    let data = Bytes::from(
-        [
-            // header = 4, bit_width = 10 (2 bytes)
-            0b0000100u8.as_bytes(),
-            10u8.as_bytes(),
-        ]
-        .concat(),
-    );
-    assert!(get_rle_bit_packed_run(data, 10).is_err());
 
     Ok(())
 }

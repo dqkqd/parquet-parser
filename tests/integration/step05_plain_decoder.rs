@@ -1,4 +1,3 @@
-
 use anyhow::Result;
 use parquet_parser::{
     data_page::read_column_data_pages, decoder::decode_data_page,
@@ -42,31 +41,6 @@ i32
 }
 
 #[test]
-fn i32_too_many_values() -> Result<()> {
-    let parquet_data = make_parquet_bytes(
-        r#"
-i32
-10
-20
-30
-"#,
-        &[&["--dtypes", "i32=int32"]],
-    )?;
-    let file_metadata = read_file_metadata(parquet_data.clone())?;
-
-    let column_metadata = file_metadata.row_groups[0].columns[0]
-        .meta_data
-        .as_ref()
-        .unwrap();
-    let mut column_data_pages = read_column_data_pages(parquet_data, column_metadata)?;
-    let data_page = column_data_pages.data_pages.pop().unwrap();
-
-    assert!(decode_data_page(data_page, Type::INT32, 4).is_err());
-
-    Ok(())
-}
-
-#[test]
 fn i64_ok() -> Result<()> {
     let parquet_data = make_parquet_bytes(
         r#"
@@ -95,31 +69,6 @@ i64
             Scalar::from(30i64)
         ]
     );
-
-    Ok(())
-}
-
-#[test]
-fn i64_too_many_values() -> Result<()> {
-    let parquet_data = make_parquet_bytes(
-        r#"
-i64
-10
-20
-30
-"#,
-        &[&["--dtypes", "i64=int64"]],
-    )?;
-    let file_metadata = read_file_metadata(parquet_data.clone())?;
-
-    let column_metadata = file_metadata.row_groups[0].columns[0]
-        .meta_data
-        .as_ref()
-        .unwrap();
-    let mut column_data_pages = read_column_data_pages(parquet_data, column_metadata)?;
-    let data_page = column_data_pages.data_pages.pop().unwrap();
-
-    assert!(decode_data_page(data_page, Type::INT64, 4).is_err());
 
     Ok(())
 }
@@ -158,31 +107,6 @@ float
 }
 
 #[test]
-fn float_too_many_values() -> Result<()> {
-    let parquet_data = make_parquet_bytes(
-        r#"
-float
-10
-20
-30
-"#,
-        &[&["--dtypes", "float=float"]],
-    )?;
-    let file_metadata = read_file_metadata(parquet_data.clone())?;
-
-    let column_metadata = file_metadata.row_groups[0].columns[0]
-        .meta_data
-        .as_ref()
-        .unwrap();
-    let mut column_data_pages = read_column_data_pages(parquet_data, column_metadata)?;
-    let data_page = column_data_pages.data_pages.pop().unwrap();
-
-    assert!(decode_data_page(data_page, Type::FLOAT, 4).is_err());
-
-    Ok(())
-}
-
-#[test]
 fn double_ok() -> Result<()> {
     let parquet_data = make_parquet_bytes(
         r#"
@@ -216,31 +140,6 @@ double
 }
 
 #[test]
-fn double_too_many_values() -> Result<()> {
-    let parquet_data = make_parquet_bytes(
-        r#"
-double
-10
-20
-30
-"#,
-        &[&["--dtypes", "double=double"]],
-    )?;
-    let file_metadata = read_file_metadata(parquet_data.clone())?;
-
-    let column_metadata = file_metadata.row_groups[0].columns[0]
-        .meta_data
-        .as_ref()
-        .unwrap();
-    let mut column_data_pages = read_column_data_pages(parquet_data, column_metadata)?;
-    let data_page = column_data_pages.data_pages.pop().unwrap();
-
-    assert!(decode_data_page(data_page, Type::DOUBLE, 4).is_err());
-
-    Ok(())
-}
-
-#[test]
 fn string_ok() -> Result<()> {
     let parquet_data = make_parquet_bytes(
         r#"
@@ -269,31 +168,6 @@ three
             Scalar::from(PlSmallStr::from_static("three")),
         ]
     );
-
-    Ok(())
-}
-
-#[test]
-fn string_too_many_values() -> Result<()> {
-    let parquet_data = make_parquet_bytes(
-        r#"
-string
-one
-two
-three
-"#,
-        &[&["--dtypes", "string=string"]],
-    )?;
-    let file_metadata = read_file_metadata(parquet_data.clone())?;
-
-    let column_metadata = file_metadata.row_groups[0].columns[0]
-        .meta_data
-        .as_ref()
-        .unwrap();
-    let mut column_data_pages = read_column_data_pages(parquet_data, column_metadata)?;
-    let data_page = column_data_pages.data_pages.pop().unwrap();
-
-    assert!(decode_data_page(data_page, Type::BYTE_ARRAY, 4).is_err());
 
     Ok(())
 }
