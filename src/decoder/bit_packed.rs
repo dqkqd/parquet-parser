@@ -11,7 +11,7 @@ use crate::format::Type;
 /// TODO: docs. Only support boolean and u32
 #[allow(unused)]
 pub fn bit_packed_decode(
-    mut encoded_data: Bytes,
+    encoded_data: Bytes,
     parquet_type: Type,
     bit_width: u8,
     num_values: usize,
