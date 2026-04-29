@@ -1,7 +1,8 @@
 use anyhow::Result;
 use parquet::data_type::AsBytes;
 use parquet_parser::{
-    data_page::read_column_data_pages, file_metadata::read_file_metadata, format::PageType,
+    file_metadata::read_file_metadata,
+    page::{Page, read_pages},
 };
 
 use crate::make_parquet_bytes;
@@ -23,33 +24,27 @@ my_col
         .meta_data
         .as_ref()
         .unwrap();
-    let column_data_pages = read_column_data_pages(parquet_data, column_metadata)?;
+    let mut pages = read_pages(parquet_data, column_metadata)?;
 
-    // no dictionary data pages
-    assert!(column_data_pages.dictionary_page.is_none());
-
-    assert_eq!(column_data_pages.data_pages.len(), 1);
+    assert_eq!(pages.len(), 1);
+    let page = pages.pop().unwrap();
 
     // header
-    assert_eq!(
-        column_data_pages.data_pages[0].page_header.type_,
-        PageType::DATA_PAGE
-    );
+    let Page::DataPage {
+        definition_levels,
+        encoded_values,
+        ..
+    } = page
+    else {
+        panic!("expect data page");
+    };
 
     // definition_levels
-    assert!(column_data_pages.data_pages[0].definition_levels.is_some());
-    assert_eq!(
-        column_data_pages.data_pages[0]
-            .definition_levels
-            .as_ref()
-            .unwrap()
-            .as_ref(),
-        [6, 1]
-    );
+    assert_eq!(definition_levels.as_ref(), [6, 1]);
 
     // encoded values
     assert_eq!(
-        column_data_pages.data_pages[0].encoded_values.as_ref(),
+        encoded_values.as_ref(),
         [1i64.as_bytes(), 2i64.as_bytes(), 3i64.as_bytes()].concat()
     );
 
@@ -75,20 +70,17 @@ my_col
         .meta_data
         .as_ref()
         .unwrap();
-    let column_data_pages = read_column_data_pages(parquet_data, column_metadata)?;
-
-    // no dictionary data pages
-    assert!(column_data_pages.dictionary_page.is_none());
+    let pages = read_pages(parquet_data, column_metadata)?;
 
     // first page
     assert_eq!(
-        column_data_pages.data_pages[0].encoded_values.as_ref(),
+        pages[0].encoded_values().as_ref(),
         [1i64.as_bytes(), 2i64.as_bytes()].concat()
     );
 
     // second page
     assert_eq!(
-        column_data_pages.data_pages[1].encoded_values.as_ref(),
+        pages[1].encoded_values().as_ref(),
         [3i64.as_bytes(), 4i64.as_bytes()].concat()
     );
 

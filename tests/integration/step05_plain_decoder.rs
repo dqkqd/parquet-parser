@@ -1,7 +1,6 @@
 use anyhow::Result;
 use parquet_parser::{
-    data_page::read_column_data_pages, decoder::decode_data_page,
-    file_metadata::read_file_metadata, format::Type,
+    decoder::decode_page, file_metadata::read_file_metadata, format::Type, page::read_pages,
 };
 use polars::prelude::*;
 
@@ -24,10 +23,10 @@ i32
         .meta_data
         .as_ref()
         .unwrap();
-    let mut column_data_pages = read_column_data_pages(parquet_data, column_metadata)?;
-    let data_page = column_data_pages.data_pages.pop().unwrap();
+    let mut pages = read_pages(parquet_data, column_metadata)?;
+    let data_page = pages.pop().unwrap();
 
-    let decoded = decode_data_page(data_page, Type::INT32, 3)?;
+    let decoded = decode_page(data_page, Type::INT32, 3)?;
     assert_eq!(
         decoded,
         [
@@ -57,10 +56,10 @@ i64
         .meta_data
         .as_ref()
         .unwrap();
-    let mut column_data_pages = read_column_data_pages(parquet_data, column_metadata)?;
-    let data_page = column_data_pages.data_pages.pop().unwrap();
+    let mut column_data_pages = read_pages(parquet_data, column_metadata)?;
+    let data_page = column_data_pages.pop().unwrap();
 
-    let decoded = decode_data_page(data_page, Type::INT64, 3)?;
+    let decoded = decode_page(data_page, Type::INT64, 3)?;
     assert_eq!(
         decoded,
         [
@@ -90,10 +89,10 @@ float
         .meta_data
         .as_ref()
         .unwrap();
-    let mut column_data_pages = read_column_data_pages(parquet_data, column_metadata)?;
-    let data_page = column_data_pages.data_pages.pop().unwrap();
+    let mut pages = read_pages(parquet_data, column_metadata)?;
+    let data_page = pages.pop().unwrap();
 
-    let decoded = decode_data_page(data_page, Type::FLOAT, 3)?;
+    let decoded = decode_page(data_page, Type::FLOAT, 3)?;
     assert_eq!(
         decoded,
         [
@@ -123,10 +122,10 @@ double
         .meta_data
         .as_ref()
         .unwrap();
-    let mut column_data_pages = read_column_data_pages(parquet_data, column_metadata)?;
-    let data_page = column_data_pages.data_pages.pop().unwrap();
+    let mut column_data_pages = read_pages(parquet_data, column_metadata)?;
+    let data_page = column_data_pages.pop().unwrap();
 
-    let decoded = decode_data_page(data_page, Type::DOUBLE, 3)?;
+    let decoded = decode_page(data_page, Type::DOUBLE, 3)?;
     assert_eq!(
         decoded,
         [
@@ -156,10 +155,10 @@ three
         .meta_data
         .as_ref()
         .unwrap();
-    let mut column_data_pages = read_column_data_pages(parquet_data, column_metadata)?;
-    let data_page = column_data_pages.data_pages.pop().unwrap();
+    let mut column_data_pages = read_pages(parquet_data, column_metadata)?;
+    let data_page = column_data_pages.pop().unwrap();
 
-    let decoded = decode_data_page(data_page, Type::BYTE_ARRAY, 3)?;
+    let decoded = decode_page(data_page, Type::BYTE_ARRAY, 3)?;
     assert_eq!(
         decoded,
         [
