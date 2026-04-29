@@ -8,6 +8,7 @@
 // mod step08_parquet_file;
 // mod step09_boolean_column;
 // mod step10_01_uleb128_decoder;
+// mod step10_02_run_header_and_encoded_data;
 // mod bit_packed_bit_width_decoder;
 // mod columns_null;
 // mod compression;
