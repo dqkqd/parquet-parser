@@ -115,9 +115,10 @@ pub fn read_page(data: Bytes, codec: CompressionCodec) -> Result<(Page, Bytes)> 
                 encoded_values: page_data,
             }
         }
-        PageType::DICTIONARY_PAGE => {
-            todo!("read_page: handle dictionary page")
-        }
+        PageType::DICTIONARY_PAGE => Page::DictionaryPage {
+            page_header,
+            encoded_values: page_data,
+        },
         page_type => unimplemented!("read_page: unsupported {:?}", page_type),
     };
 
@@ -135,20 +136,27 @@ pub struct Pages {
 ///
 /// All pages for a given column chunk are written back to back.
 pub fn read_pages(data: Bytes, column_metadata: &ColumnMetaData) -> Result<Pages> {
-    let offset = column_metadata.data_page_offset as usize;
+    let offset = column_metadata
+        .dictionary_page_offset
+        .unwrap_or(column_metadata.data_page_offset) as usize;
     let len = column_metadata.total_compressed_size as usize;
 
     let mut pages_bytes = data.slice(offset..offset + len);
     let mut data_pages = vec![];
+    let mut dictionary_page = None;
 
     while !pages_bytes.is_empty() {
         let (page, remaining) = read_page(pages_bytes, column_metadata.codec)?;
-        data_pages.push(page);
+        if page.is_dictionary() {
+            dictionary_page = Some(page);
+        } else {
+            data_pages.push(page);
+        }
         pages_bytes = remaining;
     }
 
     Ok(Pages {
         data_pages,
-        dictionary_page: None,
+        dictionary_page,
     })
 }

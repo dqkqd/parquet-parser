@@ -1,15 +1,21 @@
 use anyhow::Result;
 use polars::prelude::*;
 
-use crate::{format::Type, page::Pages};
+use crate::{decoder::decode_page, format::Type, page::Pages};
 
 /// Extracting dictionary entries from [`Pages`].
 ///
 /// Return `None` if [`Pages`] doesn't contain dictionary page (no dictionary encoding used).
 /// Otherwise, return the decoded vector of [`Scalar`].
-#[allow(unused_variables)]
 pub fn dictionary_entries(pages: &Pages, parquet_type: Type) -> Result<Option<Vec<Scalar>>> {
-    todo!("step12-01: extract dictionary entries from dictionary page")
+    let dictionary_entries = match &pages.dictionary_page {
+        Some(page) => {
+            let dictionary_entries = decode_page(page, parquet_type, page.num_values())?;
+            Some(dictionary_entries)
+        }
+        None => None,
+    };
+    Ok(dictionary_entries)
 }
 
 /// Try to map the decoded data from data page to the actual values using dictionary entries.
