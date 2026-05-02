@@ -1,11 +1,15 @@
 use anyhow::Result;
 use parquet_parser::{column::read_column, file_metadata::read_file_metadata};
 use polars::prelude::*;
+use rstest::rstest;
 
 use crate::make_parquet_bytes;
 
-#[test]
-fn i32() -> Result<()> {
+#[rstest]
+#[case::rows_per_page_2("2")]
+#[case::rows_per_page_4("4")]
+#[case::rows_per_page_all("100")]
+fn i32(#[case] rows_per_page: &'static str) -> Result<()> {
     let data = make_parquet_bytes(
         r#"
 my_col
@@ -16,7 +20,10 @@ my_col
 5
 6
 "#,
-        &[&["--dtypes", "my_col=int32"]],
+        &[
+            &["--dtypes", "my_col=int32"],
+            &["--rows-per-page", rows_per_page],
+        ],
     )?;
 
     let file_metadata = read_file_metadata(data.clone())?;
@@ -31,8 +38,11 @@ my_col
     Ok(())
 }
 
-#[test]
-fn i64() -> Result<()> {
+#[rstest]
+#[case::rows_per_page_2("2")]
+#[case::rows_per_page_4("4")]
+#[case::rows_per_page_all("100")]
+fn i64(#[case] rows_per_page: &'static str) -> Result<()> {
     let data = make_parquet_bytes(
         r#"
 my_col
@@ -43,7 +53,10 @@ my_col
 5
 6
 "#,
-        &[&["--dtypes", "my_col=int64"]],
+        &[
+            &["--dtypes", "my_col=int64"],
+            &["--rows-per-page", rows_per_page],
+        ],
     )?;
 
     let file_metadata = read_file_metadata(data.clone())?;
@@ -58,8 +71,11 @@ my_col
     Ok(())
 }
 
-#[test]
-fn float() -> Result<()> {
+#[rstest]
+#[case::rows_per_page_2("2")]
+#[case::rows_per_page_4("4")]
+#[case::rows_per_page_all("100")]
+fn float(#[case] rows_per_page: &'static str) -> Result<()> {
     let data = make_parquet_bytes(
         r#"
 my_col
@@ -70,7 +86,10 @@ my_col
 5.5
 6.6
 "#,
-        &[&["--dtypes", "my_col=float"]],
+        &[
+            &["--dtypes", "my_col=float"],
+            &["--rows-per-page", rows_per_page],
+        ],
     )?;
 
     let file_metadata = read_file_metadata(data.clone())?;
@@ -88,8 +107,11 @@ my_col
     Ok(())
 }
 
-#[test]
-fn double() -> Result<()> {
+#[rstest]
+#[case::rows_per_page_2("2")]
+#[case::rows_per_page_4("4")]
+#[case::rows_per_page_all("100")]
+fn double(#[case] rows_per_page: &'static str) -> Result<()> {
     let data = make_parquet_bytes(
         r#"
 my_col
@@ -100,7 +122,10 @@ my_col
 5.5
 6.6
 "#,
-        &[&["--dtypes", "my_col=double"]],
+        &[
+            &["--dtypes", "my_col=double"],
+            &["--rows-per-page", rows_per_page],
+        ],
     )?;
 
     let file_metadata = read_file_metadata(data.clone())?;
@@ -118,8 +143,11 @@ my_col
     Ok(())
 }
 
-#[test]
-fn string() -> Result<()> {
+#[rstest]
+#[case::rows_per_page_2("2")]
+#[case::rows_per_page_4("4")]
+#[case::rows_per_page_all("100")]
+fn string(#[case] rows_per_page: &'static str) -> Result<()> {
     let data = make_parquet_bytes(
         r#"
 my_col
@@ -130,7 +158,10 @@ four
 five
 six
 "#,
-        &[&["--dtypes", "my_col=string"]],
+        &[
+            &["--dtypes", "my_col=string"],
+            &["--rows-per-page", rows_per_page],
+        ],
     )?;
 
     let file_metadata = read_file_metadata(data.clone())?;

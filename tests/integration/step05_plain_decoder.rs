@@ -160,3 +160,34 @@ three
 
     Ok(())
 }
+
+#[test]
+fn correct_rows_per_page() -> Result<()> {
+    let parquet_data = make_parquet_bytes(
+        r#"
+i32
+10
+20
+30
+"#,
+        &[&["--dtypes", "i32=int32"], &["--rows-per-page", "1"]],
+    )?;
+    let file_metadata = read_file_metadata(parquet_data.clone())?;
+
+    let column_metadata = file_metadata.row_groups[0].columns[0]
+        .meta_data
+        .as_ref()
+        .unwrap();
+    let pages = read_pages(parquet_data, column_metadata)?;
+
+    let decoded = decode_page(&pages[0], Type::INT32, 1)?;
+    assert_eq!(decoded, [Scalar::from(10i32),]);
+
+    let decoded = decode_page(&pages[1], Type::INT32, 1)?;
+    assert_eq!(decoded, [Scalar::from(20i32),]);
+
+    let decoded = decode_page(&pages[2], Type::INT32, 1)?;
+    assert_eq!(decoded, [Scalar::from(30i32),]);
+
+    Ok(())
+}
