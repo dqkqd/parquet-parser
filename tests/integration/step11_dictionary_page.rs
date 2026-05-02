@@ -2,7 +2,7 @@ use anyhow::Result;
 use parquet_parser::{
     decoder::decode_page,
     file_metadata::read_file_metadata,
-    page::{Page, read_pages},
+    page::read_pages,
 };
 use polars::prelude::*;
 
@@ -29,20 +29,17 @@ three
         .as_ref()
         .unwrap();
 
-    let mut pages = read_pages(parquet_data.clone(), column_metadata)?;
+    let pages = read_pages(parquet_data.clone(), column_metadata)?;
 
     // the first page is the dictionary, the second page is the data page
     assert_eq!(pages.len(), 2);
-    assert!(matches!(pages[0], Page::DictionaryPage { .. }));
-    assert!(matches!(pages[1], Page::DataPage { .. }));
-
-    let _ = pages.pop().unwrap();
-    let dictionary_page = pages.pop().unwrap();
+    assert!(pages[0].is_dictionary());
+    assert!(!pages[1].is_dictionary());
 
     // the dictionary page contains unique value and is encoded using plain encoding!
-    assert_eq!(dictionary_page.num_values(), 3);
+    assert_eq!(pages[0].num_values(), 3);
     assert_eq!(
-        decode_page(dictionary_page, column_metadata.type_, 3)?,
+        decode_page(&pages[0], column_metadata.type_, 3)?,
         [
             Scalar::from(PlSmallStr::from("one")),
             Scalar::from(PlSmallStr::from("two")),

@@ -3,6 +3,7 @@ use bytes::Bytes;
 
 use crate::format::{ColumnMetaData, CompressionCodec, Encoding, PageHeader};
 
+#[derive(Debug)]
 pub enum Page {
     /// A data page contains all the data for a specific columns.
     /// At the moment, the parser cannot handle nested data type, so `repetition_levels` must not be presented.
@@ -80,6 +81,10 @@ impl Page {
             Page::DataPage { encoded_values, .. } => encoded_values.clone(),
             Page::DictionaryPage { encoded_values, .. } => encoded_values.clone(),
         }
+    }
+
+    pub fn is_dictionary(&self) -> bool {
+        matches!(self, Page::DictionaryPage { .. })
     }
 }
 
