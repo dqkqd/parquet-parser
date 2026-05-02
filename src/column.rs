@@ -41,9 +41,15 @@ pub fn read_column(data: Bytes, column_chunk: &ColumnChunk) -> Result<Column> {
     column_from_scalars(vec![], &column_name(column_metadata))
 }
 
-/// TODO: docs
+/// Map the indices values from data page to the correct values using dictionary entries.
+///
+/// - `dictionary_entries`: a vector of dictionary values.
+/// - `indices_or_scalars`: This is either indices (if this page is encoded using dictionary encoding), or the actual values
+///
+/// If the page is not encoded with dictionary, then the entries is `None` and the vector of
+/// values should be unchanged. Otherwise, it maps the indices to the actual values.
 #[allow(unused)]
-fn dictionary_lookup(
+fn map_dictionary_entries(
     dictionary_entries: &Option<Vec<Scalar>>,
     indices_or_scalars: Vec<Scalar>,
 ) -> Result<Vec<Scalar>> {
