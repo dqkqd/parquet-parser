@@ -16,3 +16,6 @@ style:
 
 test: books-test
     - cargo nextest run
+
+test-all:
+    - bash ./test-all-solutions.sh
