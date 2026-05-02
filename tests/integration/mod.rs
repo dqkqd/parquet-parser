@@ -15,7 +15,6 @@
 // mod step12_01_dictionary_decoder_two_values;
 // mod step12_02_dictionary_decoder_one_value;
 // mod step12_03_dictionary_decoder_bit_packed;
+// mod step12_04_dictionary_decoder_rle;
 // mod columns_null;
 // mod compression;
-// mod dictionary_decode_rle;
-// mod rle_bit_width_decoder;
