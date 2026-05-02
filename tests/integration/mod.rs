@@ -11,10 +11,10 @@
 // mod step10_02_run_header_and_encoded_data;
 // mod step10_03_rle_decoder;
 // mod step10_04_runs_decoder;
+// mod step11_dictionary_page;
 // mod bit_packed_bit_width_decoder;
 // mod columns_null;
 // mod compression;
-// mod dictionary_data_page;
 // mod dictionary_decode_bit_packed;
 // mod dictionary_decode_rle;
 // mod rle_bit_width_decoder;

@@ -4,8 +4,7 @@ use bytes::Bytes;
 use crate::format::{ColumnMetaData, CompressionCodec, Encoding, PageHeader};
 
 pub enum Page {
-    /// A struct represents [DataPage](https://parquet.apache.org/docs/file-format/data-pages/).
-    ///
+    /// A data page contains all the data for a specific columns.
     /// At the moment, the parser cannot handle nested data type, so `repetition_levels` must not be presented.
     ///
     /// ```text
@@ -17,12 +16,28 @@ pub enum Page {
     ///                         └────────────────────────────────────────────────────────┘
     ///                                            compressed_page_size
     /// ```
+    ///
+    /// [data page file format]: https://parquet.apache.org/docs/file-format/data-pages/
     DataPage {
         page_header: PageHeader,
         definition_levels: Bytes,
         encoded_values: Bytes,
     },
-    /// TODO: docs for dictionary page
+    /// A dictionary page contains the actual values for a column chunk, the actual indexes are store
+    /// in the data page itself.
+    ///
+    /// ```text
+    /// ┌───────────────────────┬────────────────┐
+    /// │       PageHeader      │ encoded_values │
+    /// │                       │                │
+    /// │                       │                │
+    /// └───────────────────────┴────────────────┘
+    ///                         └────────────────┘
+    ///                        compressed_page_size
+    /// ```
+    ///
+    /// [dictionary page for column chunk]: https://parquet.apache.org/docs/file-format/data-pages/columnchunks/
+    /// [dictionary encoding]: https://parquet.apache.org/docs/file-format/data-pages/encodings/#DICTIONARY
     DictionaryPage {
         page_header: PageHeader,
         encoded_values: Bytes,
