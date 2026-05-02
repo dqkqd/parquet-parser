@@ -36,19 +36,31 @@ pub fn decode_definition_levels(page: &Page) -> Result<Vec<bool>> {
 }
 
 /// Add null entries to a vector of [`Scalar`] decoded from page data.
-#[allow(unused_variables)]
 pub fn add_nulls_entries(
     is_present: &[bool],
     scalars: Vec<Scalar>,
     parquet_type: Type,
 ) -> Result<Vec<Scalar>> {
-    todo!("step11-02: handle nulls in a column")
+    let mut scalars = scalars;
+    scalars.reverse();
+
+    let mut result = Vec::with_capacity(is_present.len());
+    for present in is_present {
+        if *present {
+            result.push(scalars.pop().with_context(
+                || "add_nulls_entries: scalars is empty! the nulls map isn't correct",
+            )?);
+        } else {
+            result.push(scalar_null(parquet_type))
+        }
+    }
+
+    Ok(result)
 }
 
 /// Convert parquet type to polar's [`DataType`].
 ///
 /// This allows creating a null value using [`Scalar::null`] for a specific [`Type`].
-#[allow(unused)]
 fn scalar_null(parquet_type: Type) -> Scalar {
     let data_type = match parquet_type {
         Type::BOOLEAN => DataType::Boolean,

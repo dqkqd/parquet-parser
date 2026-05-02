@@ -5,6 +5,7 @@ use polars::prelude::*;
 use crate::{
     decoder::decode_page,
     format::{ColumnChunk, ColumnMetaData},
+    nulls::{add_nulls_entries, decode_definition_levels},
     page::read_pages,
 };
 
@@ -34,7 +35,15 @@ pub fn read_column(data: Bytes, column_chunk: &ColumnChunk) -> Result<Column> {
     let pages = read_pages(data, column_metadata)?;
     let mut scalars = Vec::with_capacity(column_metadata.num_values as usize);
     for page in pages.data_pages {
-        let decoded_scalars = decode_page(&page, column_metadata.type_, page.num_values())?;
+        // compute the null map from the definition levels
+        let is_present = decode_definition_levels(&page)?;
+        // compute the actual number of values encoded in a page
+        let num_values = is_present.iter().filter(|v| **v).count();
+
+        let decoded_scalars = decode_page(&page, column_metadata.type_, num_values)?;
+        let decoded_scalars =
+            add_nulls_entries(&is_present, decoded_scalars, column_metadata.type_)?;
+
         scalars.extend(decoded_scalars);
     }
     column_from_scalars(scalars, column_metadata)
