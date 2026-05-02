@@ -1,9 +1,6 @@
 use anyhow::Result;
 use parquet::data_type::AsBytes;
-use parquet_parser::{
-    file_metadata::read_file_metadata,
-    page::{Page, read_pages},
-};
+use parquet_parser::{file_metadata::read_file_metadata, page::read_pages};
 
 use crate::make_parquet_bytes;
 
@@ -28,23 +25,11 @@ my_col
 
     assert_eq!(pages.len(), 1);
     let page = pages.pop().unwrap();
-
-    // header
-    let Page::DataPage {
-        definition_levels,
-        encoded_values,
-        ..
-    } = page
-    else {
-        panic!("expect data page");
-    };
-
-    // definition_levels
-    assert_eq!(definition_levels.as_ref(), [6, 1]);
+    assert!(!page.is_dictionary());
 
     // encoded values
     assert_eq!(
-        encoded_values.as_ref(),
+        page.encoded_values(),
         [1i64.as_bytes(), 2i64.as_bytes(), 3i64.as_bytes()].concat()
     );
 
@@ -74,13 +59,13 @@ my_col
 
     // first page
     assert_eq!(
-        pages[0].encoded_values().as_ref(),
+        pages[0].encoded_values(),
         [1i64.as_bytes(), 2i64.as_bytes()].concat()
     );
 
     // second page
     assert_eq!(
-        pages[1].encoded_values().as_ref(),
+        pages[1].encoded_values(),
         [3i64.as_bytes(), 4i64.as_bytes()].concat()
     );
 

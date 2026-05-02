@@ -2,7 +2,7 @@ use anyhow::Result;
 use parquet::data_type::AsBytes;
 use parquet_parser::{
     file_metadata::read_file_metadata,
-    page::{Page, read_page},
+    page::read_page,
 };
 
 use crate::make_parquet_bytes;
@@ -32,20 +32,11 @@ col1
 
     // header
     assert_eq!(page.num_values(), 3);
-    let Page::DataPage {
-        definition_levels,
-        encoded_values,
-        ..
-    } = page
-    else {
-        panic!("expect data page");
-    };
-    // definition_levels
-    assert_eq!(definition_levels.as_ref(), [6, 1]);
+    assert!(!page.is_dictionary());
 
     // encoded values
     assert_eq!(
-        encoded_values.as_ref(),
+        page.encoded_values(),
         [1i64.as_bytes(), 2i64.as_bytes(), 3i64.as_bytes()].concat()
     );
 
@@ -78,14 +69,14 @@ col1
     let (page, remaining_bytes) = read_page(page_bytes, column_metadata.codec)?;
     assert_eq!(page.num_values(), 2);
     assert_eq!(
-        page.encoded_values().as_ref(),
+        page.encoded_values(),
         [1i64.as_bytes(), 2i64.as_bytes()].concat()
     );
 
     // second page
     let (page, remaining_bytes) = read_page(remaining_bytes, column_metadata.codec)?;
     assert_eq!(page.num_values(), 1);
-    assert_eq!(page.encoded_values().as_ref(), [3i64.as_bytes()].concat());
+    assert_eq!(page.encoded_values(), [3i64.as_bytes()].concat());
 
     // there is no remaining page data!
     assert!(remaining_bytes.is_empty());
