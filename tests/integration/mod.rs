@@ -12,7 +12,7 @@
 // mod step10_03_rle_decoder;
 // mod step10_04_runs_decoder;
 // mod step11_dictionary_page;
-// mod bit_packed_bit_width_decoder;
+// mod step12_01_dictionary_decoder_two_values;
 // mod columns_null;
 // mod compression;
 // mod dictionary_decode_bit_packed;

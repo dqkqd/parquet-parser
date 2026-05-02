@@ -40,3 +40,12 @@ pub fn read_column(data: Bytes, column_chunk: &ColumnChunk) -> Result<Column> {
     // - Decode all the pages into `scalars`
     column_from_scalars(vec![], &column_name(column_metadata))
 }
+
+/// TODO: docs
+#[allow(unused)]
+fn dictionary_lookup(
+    dictionary_entries: &Option<Vec<Scalar>>,
+    indices_or_scalars: Vec<Scalar>,
+) -> Result<Vec<Scalar>> {
+    todo!()
+}
