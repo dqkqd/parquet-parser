@@ -83,6 +83,15 @@ impl Page {
         }
     }
 
+    pub fn definition_levels(&self) -> Option<Bytes> {
+        match self {
+            Page::DataPage {
+                definition_levels, ..
+            } => Some(definition_levels.clone()),
+            Page::DictionaryPage { .. } => None,
+        }
+    }
+
     pub fn is_dictionary(&self) -> bool {
         matches!(self, Page::DictionaryPage { .. })
     }
