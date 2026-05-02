@@ -10,5 +10,8 @@ use crate::{decoder::rle_bit_packing_hybrid::rle_bit_packing_hybrid_decode, form
 pub fn dictionary_decode(encoded_data: Bytes, num_values: usize) -> Result<Vec<Scalar>> {
     let mut encoded_data = encoded_data;
     let bit_width = encoded_data.get_u8();
+    if bit_width == 0 {
+        return Ok(vec![Scalar::from(0); num_values]);
+    }
     rle_bit_packing_hybrid_decode(encoded_data, Type::INT32, bit_width, num_values, false)
 }
