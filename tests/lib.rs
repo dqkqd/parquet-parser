@@ -7,7 +7,13 @@ use std::process::Command;
 use anyhow::Result;
 use anyhow::bail;
 use bytes::Bytes;
+use ctor::ctor;
 use tempfile::NamedTempFile;
+
+#[ctor(unsafe)]
+fn init_polars_env() {
+    unsafe { std::env::set_var("POLARS_FMT_MAX_ROWS", "1000") };
+}
 
 pub fn make_parquet_file(data: &str, args: &[&[&'static str]]) -> Result<NamedTempFile> {
     let mut csv_file = NamedTempFile::new()?;

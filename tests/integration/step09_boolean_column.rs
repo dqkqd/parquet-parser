@@ -170,7 +170,6 @@ false
 "#,
         &[&["--rows-per-page", rows_per_page]],
     )?;
-    unsafe { std::env::set_var("POLARS_FMT_MAX_ROWS", "100") };
     assert_snapshot!(read_parquet(parquet_file)?, @"
     shape: (69, 1)
     ┌─────────┐
