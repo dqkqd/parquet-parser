@@ -2,6 +2,7 @@ use anyhow::Result;
 use bytes::{Buf, Bytes};
 
 use crate::{
+    compression::decompress,
     format::{ColumnMetaData, CompressionCodec, Encoding, PageHeader, PageType},
     thrift::read_thrift_metadata,
 };
@@ -97,11 +98,10 @@ impl Page {
 ///
 /// This function receives `data` at page boundary,  and `codec` (to handle compression),
 /// and returns a [`Page`] and remaining bytes.
-#[allow(unused_variables)]
 pub fn read_page(data: Bytes, codec: CompressionCodec) -> Result<(Page, Bytes)> {
     let (page_header, mut remaining) = read_thrift_metadata::<PageHeader>(data)?;
-    let mut page_data = remaining.split_to(page_header.compressed_page_size as usize);
-
+    let page_data = remaining.split_to(page_header.compressed_page_size as usize);
+    let mut page_data = decompress(page_data, codec)?;
     let page = match page_header.type_ {
         PageType::DATA_PAGE => {
             // because the definition levels contains the length itself,
