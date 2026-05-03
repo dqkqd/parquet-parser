@@ -6,7 +6,6 @@ pub mod rle_bit_packing_hybrid;
 pub mod uleb128;
 
 use anyhow::Result;
-use bytes::Bytes;
 use polars::prelude::*;
 
 use crate::{
@@ -14,22 +13,13 @@ use crate::{
     page::Page,
 };
 
-/// Decode a data page into a vector of [`Scalar`] using correct decoder.
+/// Decode a page into a vector of [`Scalar`] using a correct decoder.
 #[allow(unused_variables)]
 pub fn decode_page(page: &Page, parquet_type: Type, num_values: usize) -> Result<Vec<Scalar>> {
     match page.encoding() {
-        Encoding::PLAIN => todo!(),
-        Encoding::RLE => todo!(),
-        Encoding::RLE_DICTIONARY => todo!(),
+        Encoding::PLAIN => todo!("step05: plain decoder"),
+        Encoding::RLE => todo!("step10-04: rle bit-packed hybrid decoder"),
+        Encoding::RLE_DICTIONARY => todo!("step12-01: dictionary decoder"),
         e => unimplemented!("decode_data_page: unsupported encoding {:?}", e),
     }
-}
-
-/// Decode a definition levels for nulls handling.
-#[allow(unused_variables)]
-pub fn decode_definition_levels(
-    definition_levels: Bytes,
-    num_values: usize,
-) -> Result<Vec<Scalar>> {
-    todo!()
 }

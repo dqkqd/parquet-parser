@@ -68,7 +68,7 @@ five
 #[case::ten(10)]
 #[case::sixteen(16)]
 fn many_bit_width(#[case] bit_width: usize) -> Result<()> {
-    let length = 1 << (bit_width - 1) + 1;
+    let length = 1 << ((bit_width - 1) + 1);
     let data: Vec<String> = (0..length).map(|v| v.to_string()).collect();
     let parquet_data: Vec<String> = vec!["my_col".to_string()]
         .into_iter()

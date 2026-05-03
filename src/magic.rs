@@ -1,7 +1,8 @@
 use anyhow::Result;
 use bytes::Bytes;
 
-/// Ensure we are reading a parquet file by checking the header and footer containing magic number `PAR1`
+/// Ensure we are reading a parquet file by checking whether
+/// the header and footer contain magic number `PAR1`
 ///
 /// ```text
 /// 4-byte magic number "PAR1"
@@ -12,5 +13,5 @@ use bytes::Bytes;
 /// [file-format]: https://parquet.apache.org/docs/file-format/
 #[allow(unused_variables)]
 pub fn ensure_header_footer_magic(data: Bytes) -> Result<()> {
-    todo!()
+    todo!("step01: implement magic number")
 }

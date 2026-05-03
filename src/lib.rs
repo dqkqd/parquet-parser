@@ -8,6 +8,7 @@ pub mod compression;
 pub mod decoder;
 pub mod file_metadata;
 pub mod magic;
+pub mod nulls;
 pub mod page;
 pub mod reader;
 pub mod row_group;

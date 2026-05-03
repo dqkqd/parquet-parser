@@ -24,7 +24,7 @@ i32
         .as_ref()
         .unwrap();
     let pages = read_pages(parquet_data, column_metadata)?;
-    let decoded = decode_page(&pages[0], Type::INT32, 3)?;
+    let decoded = decode_page(&pages.data_pages[0], Type::INT32, 3)?;
     assert_eq!(
         decoded,
         [
@@ -55,7 +55,7 @@ i64
         .as_ref()
         .unwrap();
     let pages = read_pages(parquet_data, column_metadata)?;
-    let decoded = decode_page(&pages[0], Type::INT64, 3)?;
+    let decoded = decode_page(&pages.data_pages[0], Type::INT64, 3)?;
     assert_eq!(
         decoded,
         [
@@ -86,7 +86,7 @@ float
         .as_ref()
         .unwrap();
     let pages = read_pages(parquet_data, column_metadata)?;
-    let decoded = decode_page(&pages[0], Type::FLOAT, 3)?;
+    let decoded = decode_page(&pages.data_pages[0], Type::FLOAT, 3)?;
     assert_eq!(
         decoded,
         [
@@ -117,7 +117,7 @@ double
         .as_ref()
         .unwrap();
     let pages = read_pages(parquet_data, column_metadata)?;
-    let decoded = decode_page(&pages[0], Type::DOUBLE, 3)?;
+    let decoded = decode_page(&pages.data_pages[0], Type::DOUBLE, 3)?;
     assert_eq!(
         decoded,
         [
@@ -148,7 +148,7 @@ three
         .as_ref()
         .unwrap();
     let pages = read_pages(parquet_data, column_metadata)?;
-    let decoded = decode_page(&pages[0], Type::BYTE_ARRAY, 3)?;
+    let decoded = decode_page(&pages.data_pages[0], Type::BYTE_ARRAY, 3)?;
     assert_eq!(
         decoded,
         [
@@ -180,13 +180,13 @@ i32
         .unwrap();
     let pages = read_pages(parquet_data, column_metadata)?;
 
-    let decoded = decode_page(&pages[0], Type::INT32, 1)?;
+    let decoded = decode_page(&pages.data_pages[0], Type::INT32, 1)?;
     assert_eq!(decoded, [Scalar::from(10i32),]);
 
-    let decoded = decode_page(&pages[1], Type::INT32, 1)?;
+    let decoded = decode_page(&pages.data_pages[1], Type::INT32, 1)?;
     assert_eq!(decoded, [Scalar::from(20i32),]);
 
-    let decoded = decode_page(&pages[2], Type::INT32, 1)?;
+    let decoded = decode_page(&pages.data_pages[2], Type::INT32, 1)?;
     assert_eq!(decoded, [Scalar::from(30i32),]);
 
     Ok(())

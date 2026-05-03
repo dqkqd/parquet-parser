@@ -29,8 +29,10 @@ enum CliCompression {
 
 #[derive(Parser, Debug)]
 struct Cli {
+    #[arg(help="The input csv file")]
     input: PathBuf,
 
+    #[arg(help="The output parquet file")]
     output: PathBuf,
 
     #[arg(long, default_value = "Hello parquet!")]
@@ -51,7 +53,9 @@ struct Cli {
     #[arg(long)]
     rows_per_group: Option<usize>,
 
-    #[arg(long, value_parser = parse_column_dtype)]
+    #[arg(long, value_parser = parse_column_dtype, 
+          help = "set data type for a column: <column name>=<data type>, supported data types: boolean, int32, int64, float, double, string")
+    ]
     dtypes: Vec<(String, Type)>,
 }
 

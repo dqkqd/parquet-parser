@@ -25,18 +25,12 @@ pub fn plain_decode(
     num_values: usize,
 ) -> Result<Vec<Scalar>> {
     match parquet_type {
-        Type::INT32 => todo!(),
-        Type::INT64 => todo!(),
-        Type::FLOAT => todo!(),
-        Type::DOUBLE => todo!(),
-        Type::BYTE_ARRAY => {
-            // To avoid messing with unicode data, we assume
-            // the string can be parsed from raw utf8 bytes without error.
-            // For example, this code is never panicking
-            // let string_data = String::from_utf8(vec8_data).unwrap();
-            todo!()
-        }
-        Type::BOOLEAN => todo!("plain_decode: unsupported boolean for now, implement later"),
+        Type::INT32 => todo!("step05: decode int32"),
+        Type::INT64 => todo!("step05: decode int64"),
+        Type::FLOAT => todo!("step05: decode float"),
+        Type::DOUBLE => todo!("step05: decode double"),
+        Type::BYTE_ARRAY => todo!("step05: decode string"),
+        Type::BOOLEAN => todo!("step09: decode boolean"),
         _ => unimplemented!("plain_decode: unsupported data type {:?}", parquet_type),
     }
 }

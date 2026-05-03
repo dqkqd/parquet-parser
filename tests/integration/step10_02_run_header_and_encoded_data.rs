@@ -22,9 +22,9 @@ fn bit_packed_run_width_1() -> Result<()> {
     assert_eq!(
         run,
         RleBitPackedRun::BitPacked {
-            num_values: 16,
+            run_len: 16,
             bit_width: 1,
-            encoded_values: Bytes::from(10u16.as_bytes()),
+            bit_packed_values: Bytes::from(10u16.as_bytes()),
         }
     );
 
@@ -33,9 +33,9 @@ fn bit_packed_run_width_1() -> Result<()> {
     assert_eq!(
         run,
         RleBitPackedRun::BitPacked {
-            num_values: 32,
+            run_len: 32,
             bit_width: 1,
-            encoded_values: Bytes::from(10u32.as_bytes()),
+            bit_packed_values: Bytes::from(10u32.as_bytes()),
         }
     );
 
@@ -65,9 +65,9 @@ fn bit_packed_run_width_3() -> Result<()> {
     assert_eq!(
         run,
         RleBitPackedRun::BitPacked {
-            num_values: 16,
+            run_len: 16,
             bit_width: 3,
-            encoded_values: Bytes::from([10u16.as_bytes(), 20u32.as_bytes()].concat()),
+            bit_packed_values: Bytes::from([10u16.as_bytes(), 20u32.as_bytes()].concat()),
         }
     );
 
@@ -76,9 +76,9 @@ fn bit_packed_run_width_3() -> Result<()> {
     assert_eq!(
         run,
         RleBitPackedRun::BitPacked {
-            num_values: 32,
+            run_len: 32,
             bit_width: 3,
-            encoded_values: Bytes::from([10u32.as_bytes(), 20u64.as_bytes()].concat()),
+            bit_packed_values: Bytes::from([10u32.as_bytes(), 20u64.as_bytes()].concat()),
         }
     );
 
@@ -106,9 +106,9 @@ fn rle_run_width_1() -> Result<()> {
     assert_eq!(
         run,
         RleBitPackedRun::Rle {
-            num_values: 2,
+            run_len: 2,
             bit_width: 1,
-            encoded_values: Bytes::from(10u8.as_bytes())
+            repeated_value: Bytes::from(10u8.as_bytes())
         }
     );
 
@@ -117,9 +117,9 @@ fn rle_run_width_1() -> Result<()> {
     assert_eq!(
         run,
         RleBitPackedRun::Rle {
-            num_values: 4,
+            run_len: 4,
             bit_width: 1,
-            encoded_values: Bytes::from(10u8.as_bytes())
+            repeated_value: Bytes::from(10u8.as_bytes())
         }
     );
 
@@ -147,9 +147,9 @@ fn rle_run_width_10() -> Result<()> {
     assert_eq!(
         run,
         RleBitPackedRun::Rle {
-            num_values: 2,
+            run_len: 2,
             bit_width: 10,
-            encoded_values: Bytes::from(10u16.as_bytes())
+            repeated_value: Bytes::from(10u16.as_bytes())
         }
     );
 
@@ -158,9 +158,9 @@ fn rle_run_width_10() -> Result<()> {
     assert_eq!(
         run,
         RleBitPackedRun::Rle {
-            num_values: 4,
+            run_len: 4,
             bit_width: 10,
-            encoded_values: Bytes::from(10u16.as_bytes())
+            repeated_value: Bytes::from(10u16.as_bytes())
         }
     );
 

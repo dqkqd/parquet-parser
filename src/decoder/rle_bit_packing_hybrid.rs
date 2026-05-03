@@ -7,88 +7,49 @@ use crate::format::Type;
 /// Enum represents a rle bit-packed hybrid run data.
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord)]
 pub enum RleBitPackedRun {
-    BitPacked {
-        num_values: usize,
-        bit_width: u8,
-        encoded_values: Bytes,
-    },
     Rle {
-        num_values: usize,
+        run_len: usize,
         bit_width: u8,
-        encoded_values: Bytes,
+        repeated_value: Bytes,
+    },
+    BitPacked {
+        run_len: usize,
+        bit_width: u8,
+        bit_packed_values: Bytes,
     },
 }
 
 /// Get the correct run from the encoded data.
 ///
-/// This function takes an encoded run and return whether it is a rle run or a bit-packed run.
+/// This function extract a run from the encoded data and returns the remaining bytes.
 ///
-/// ```text
-/// run := <bit-packed-run> | <rle-run>
-/// ```
-/// The `encoded_data` this function receives is for many runs, it has to returns the remaining
-/// `encoded_data` so that caller can extract data for the next runs.
+/// This function should decode the run header, determine run types, calculate the number of values
+/// and the encoded values for a specific run.
+/// The passed in `encoded_data` is guaranteed to be at the run boundary.
 ///
-/// Both rle run and bit-packed run are encoded with a header followed by encoded values:
-/// ```text
-/// bit-packed-run := <bit-packed-header> <bit-packed-values>
-/// rle-run := <rle-header> <repeated-value>
-/// ```
-/// The header can be decoded using [ULEB128](https://en.wikipedia.org/wiki/LEB128). The decoded header
-/// tells us whether this run is bit-packed or rle. If the MSB is 1, then it should be bit-packed, otherwise it is rle.
-/// ```text
-/// bit-packed-header := varint-encode(<bit-pack-scaled-run-len> << 1 | 1)
-/// rle-header := varint-encode( (rle-run-len) << 1)
-/// ```
 ///
-/// ## Bit-packed run
-///
-/// The bit-packed run always pack a multiple of 8 values at a time, so the total number of values (the run-len)
-/// should be multiple by 8.
-///
-/// ```text
-/// bit-packed-header := varint-encode(<bit-pack-scaled-run-len> << 1 | 1)
-/// bit-pack-scaled-run-len := (bit-packed-run-len) / 8
-/// ```
-///
-/// The total bits needed for the encoded data is: `bit-packed-scaled-run-len * bit-width`
-///
-/// ## Rle run
-///
-/// The run length for a rle run is saved as is.
-///
-/// ```text
-/// rle-header := varint-encode( (rle-run-len) << 1)
-/// ```
-///
-/// The total bits needed for the encoded data is: `round-up-to-next-byte(bit-width)`
-///
+/// *Caller should call this in a loop and extract all the encoded runs.*
 #[allow(unused)]
 pub fn get_rle_bit_packed_run(
     encoded_data: Bytes,
     bit_width: u8,
 ) -> Result<(RleBitPackedRun, Bytes)> {
-    todo!()
+    todo!("step10-02: implement getting RleBitPackedRun")
 }
 
 /// RLE bit-packed hybrid decoding.
 ///
-/// The encoded data can contains many runs, each run is either bit-packed run or rle run.
+/// This functions decoded all the runs and return the decoded vector of [`Scalar`].
+/// It should rely on the [`decode_run`]
 ///
-/// ```text
-/// rle-bit-packed-hybrid: <length> <encoded-data>
-/// length is not always prepended, please check the table below for more detail
-/// length := length of the <encoded-data> in bytes stored as 4 bytes little endian (unsigned int32)
-/// encoded-data := <run>*
-/// run := <bit-packed-run> | <rle-run>
-/// ```
+/// The encoded data contains a 4-byte length and the actual encoded runs.
+/// Each run is either a rle run or a bit-packed run.
 ///
-/// If there are more than 8 repeated values, then it will be encoded as a rle run, otherwise bit-packed run.
-/// We don't need to care this if we just write a parser. But this is a useful information for writing tests.
+/// Bonus:
+/// - A run should be encoded as a RLE run if there are more that 8 repeated values
+/// - A total values for a bit-packed run is less than or equal 504. This is followed by official java implementation: https://github.com/apache/parquet-java/blob/4c8f4d4b875259e2ece5f96c5ee90a03f78805ec/parquet-column/src/main/java/org/apache/parquet/column/values/rle/RunLengthBitPackingHybridEncoder.java#L101-L113
 ///
-/// The total values for a bit-packed run is less than or equal 504. This is followed by the official java implementation.
-/// https://github.com/apache/parquet-java/blob/4c8f4d4b875259e2ece5f96c5ee90a03f78805ec/parquet-column/src/main/java/org/apache/parquet/column/values/rle/RunLengthBitPackingHybridEncoder.java#L101-L113
-///
+/// *We don't need to care this if we just write a parser. But this is a useful information for writing tests.*
 /// ```
 #[allow(unused)]
 pub fn rle_bit_packing_hybrid_decode(
@@ -98,14 +59,13 @@ pub fn rle_bit_packing_hybrid_decode(
     num_values: usize,
     prepend_length: bool,
 ) -> Result<Vec<Scalar>> {
-    todo!()
+    todo!("step10-04: implement decoding rle bit-packed encoded data")
 }
 
-#[allow(unused)]
 /// Decode a single rle bit-packed run.
-fn rle_bit_packing_hybrid_run_decode(
-    run: RleBitPackedRun,
-    parquet_type: Type,
-) -> Result<Vec<Scalar>> {
-    todo!()
+///
+/// This function takes a run and returns a decoded vector of [`Scalar`].
+#[allow(unused)]
+fn decode_run(run: RleBitPackedRun, parquet_type: Type) -> Result<Vec<Scalar>> {
+    todo!("step10-04: implement decoding a single run")
 }

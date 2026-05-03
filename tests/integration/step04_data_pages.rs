@@ -21,15 +21,14 @@ my_col
         .meta_data
         .as_ref()
         .unwrap();
-    let mut pages = read_pages(parquet_data, column_metadata)?;
+    let pages = read_pages(parquet_data, column_metadata)?;
 
-    assert_eq!(pages.len(), 1);
-    let page = pages.pop().unwrap();
-    assert!(!page.is_dictionary());
+    assert_eq!(pages.data_pages.len(), 1);
+    assert!(pages.dictionary_page.is_none());
 
     // encoded values
     assert_eq!(
-        page.encoded_values(),
+        pages.data_pages[0].encoded_values(),
         [1i64.as_bytes(), 2i64.as_bytes(), 3i64.as_bytes()].concat()
     );
 
@@ -59,13 +58,13 @@ my_col
 
     // first page
     assert_eq!(
-        pages[0].encoded_values(),
+        pages.data_pages[0].encoded_values(),
         [1i64.as_bytes(), 2i64.as_bytes()].concat()
     );
 
     // second page
     assert_eq!(
-        pages[1].encoded_values(),
+        pages.data_pages[1].encoded_values(),
         [3i64.as_bytes(), 4i64.as_bytes()].concat()
     );
 

@@ -61,6 +61,9 @@ i32,i64,float,double,string
 4,4,4.4,4.4,four
 5,5,5.5,5.5,five
 6,6,6.6,6.6,six
+7,7,7.7,7.7,seven
+8,8,8.8,8.8,eight
+9,9,9.9,9.9,nine
 "#,
         &[
             &["--rows-per-page", "2"],
@@ -76,7 +79,7 @@ i32,i64,float,double,string
     let file_metadata = read_file_metadata(data.clone())?;
     let df = read_row_groups(data, &file_metadata)?;
     assert_snapshot!(df, @"
-    shape: (6, 5)
+    shape: (9, 5)
     ┌─────┬─────┬───────┬────────┬────────┐
     │ i32 ┆ i64 ┆ float ┆ double ┆ string │
     │ --- ┆ --- ┆ ---   ┆ ---    ┆ ---    │
@@ -88,6 +91,9 @@ i32,i64,float,double,string
     │ 4   ┆ 4   ┆ 4.4   ┆ 4.4    ┆ four   │
     │ 5   ┆ 5   ┆ 5.5   ┆ 5.5    ┆ five   │
     │ 6   ┆ 6   ┆ 6.6   ┆ 6.6    ┆ six    │
+    │ 7   ┆ 7   ┆ 7.7   ┆ 7.7    ┆ seven  │
+    │ 8   ┆ 8   ┆ 8.8   ┆ 8.8    ┆ eight  │
+    │ 9   ┆ 9   ┆ 9.9   ┆ 9.9    ┆ nine   │
     └─────┴─────┴───────┴────────┴────────┘
     ");
 
