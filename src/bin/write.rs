@@ -4,7 +4,7 @@ use std::io::{Read, Write};
 use std::path::PathBuf;
 
 use anyhow::{Context, Result, bail};
-use clap::Parser;
+use clap::{Parser, ValueEnum};
 use parquet::basic::{Compression, Encoding};
 use parquet_parser::format::Type;
 use parquet_parser::writer::write_parquet;
@@ -13,6 +13,18 @@ fn main() -> Result<()> {
     let cli = Cli::parse();
     make_parquet(cli)?;
     Ok(())
+}
+
+#[derive(Debug, Clone, ValueEnum)]
+enum CliEncoding {
+    Plain,
+    Rle,
+}
+
+#[derive(Debug, Clone, ValueEnum)]
+enum CliCompression {
+    Uncompressed,
+    Snappy,
 }
 
 #[derive(Parser, Debug)]
@@ -27,11 +39,11 @@ struct Cli {
     #[arg(long, default_value_t = false)]
     dictionary: bool,
 
-    #[arg(long, default_value = "plain", value_parser = parse_encoding)]
-    encoding: Encoding,
+    #[arg(long, value_enum, default_value_t = CliEncoding::Plain)]
+    encoding: CliEncoding,
 
-    #[arg(long, default_value = "uncompressed", value_parser = parse_compression)]
-    compression: Compression,
+    #[arg(long, value_enum, default_value_t = CliCompression::Uncompressed)]
+    compression: CliCompression,
 
     #[arg(long)]
     rows_per_page: Option<usize>,
@@ -43,18 +55,19 @@ struct Cli {
     dtypes: Vec<(String, Type)>,
 }
 
-fn parse_encoding(s: &str) -> Result<Encoding> {
-    match s.trim() {
-        "plain" => Ok(Encoding::PLAIN),
-        "rle" => Ok(Encoding::RLE),
-        e => bail!("Unsupported encoding {e}, expected one of [plain]"),
+impl Cli {
+    fn parquet_encoding(&self) -> Encoding {
+        match self.encoding {
+            CliEncoding::Plain => Encoding::PLAIN,
+            CliEncoding::Rle => Encoding::RLE,
+        }
     }
-}
 
-fn parse_compression(s: &str) -> Result<Compression> {
-    match s.trim() {
-        "uncompressed" => Ok(Compression::UNCOMPRESSED),
-        e => bail!("Unsupported compression {e}, expected one of [uncompressed]"),
+    fn parquet_compression(&self) -> Compression {
+        match self.compression {
+            CliCompression::Uncompressed => Compression::UNCOMPRESSED,
+            CliCompression::Snappy => Compression::SNAPPY,
+        }
     }
 }
 
@@ -77,7 +90,7 @@ fn parse_column_dtype(s: &str) -> Result<(String, Type)> {
 }
 
 fn make_parquet(cli: Cli) -> Result<()> {
-    let mut file = File::open(cli.input)?;
+    let mut file = File::open(&cli.input)?;
     let mut data = Vec::new();
     file.read_to_end(&mut data)?;
 
@@ -86,8 +99,8 @@ fn make_parquet(cli: Cli) -> Result<()> {
     let out = write_parquet(
         data,
         cli.dictionary,
-        cli.encoding,
-        cli.compression,
+        cli.parquet_encoding(),
+        cli.parquet_compression(),
         cli.rows_per_page,
         cli.rows_per_group,
         Some(data_types_override),
