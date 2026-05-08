@@ -1,7 +1,11 @@
 # Dictionary Decoder (one value)
 
-If the dictionary page only contains one value, all the values must be the same. In this case,
-bit-width is 0 and no encoded indexes need to be stored in the data page.
+If all the values for a given column are the same, then:
+
+- The dictionary page only has 1 value
+- All the data pages store 0 as their bit-width and no encoded indexes are stored.
+
+You should handle this case correctly to avoid panicking when there is no encoded indexes.
 
 ## Task
 
@@ -15,7 +19,7 @@ pub fn dictionary_decode(encoded_data: Bytes, num_values: usize) -> Result<Vec<S
 
 ## Test
 
-Test case for this step is `step12_02_dictionary_decoder_one_value`.
+Test case for this step is `step12_03_dictionary_decoder_one_value`.
 
 ## Hints and Solution
 

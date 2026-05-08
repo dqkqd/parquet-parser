@@ -1,19 +1,16 @@
 # Compression
 
-Pages in a parquet file might be compressed. That information is stored in the column metadata's
-codec field.
+Pages in a parquet file might be compressed, the compression codec is stored in the `codec` field in
+column metadata.
 
 ![Page compression information is stored in the codec field](images/page-compression-information.png)
 
 There are
-[many codecs listed up from the spec](https://parquet.apache.org/docs/file-format/data-pages/compression/),
+[many codecs listed in the spec](https://parquet.apache.org/docs/file-format/data-pages/compression/),
 however, our parser will only support
 [SNAPPY](https://parquet.apache.org/docs/file-format/data-pages/compression/#snappy).
 
 ## Task
-
-You need to implement a new function for decompress page data, and then apply it when reading a
-page.
 
 ### `decompress`
 
@@ -22,8 +19,8 @@ Implement the `decompress` function in `src/compression.rs`.
 ```rust,ignore
 pub fn decompress(compressed_data: Bytes, codec: CompressionCodec) -> Result<Bytes> {
     match codec {
-        CompressionCodec::UNCOMPRESSED => todo!("step14: implement compression"),
-        CompressionCodec::SNAPPY => todo!("step14: implement compression"),
+        CompressionCodec::UNCOMPRESSED => todo!("step13: implement compression"),
+        CompressionCodec::SNAPPY => todo!("step13: implement compression"),
         _ => unimplemented!("Unsupported codec: {}", codec.0),
     }
 }
@@ -31,8 +28,7 @@ pub fn decompress(compressed_data: Bytes, codec: CompressionCodec) -> Result<Byt
 
 ### `read_page`
 
-Update the `read_page` function to decompress a compressed page data. For snappy decompression,
-refer to to [snap crate](https://docs.rs/snap/latest/snap/).
+Update the `read_page` function to decompress a compressed page data.
 
 ```rust,ignore
 pub fn read_page(data: Bytes, codec: CompressionCodec) -> Result<(Page, Bytes)> {
@@ -40,17 +36,18 @@ pub fn read_page(data: Bytes, codec: CompressionCodec) -> Result<(Page, Bytes)> 
 }
 ```
 
+For snappy decompression, refer to [snap crate](https://docs.rs/snap/latest/snap/).
+
 ## Test
 
-Test case for this step is `step14_compression`.
+Test case for this step is `step13_compression`.
 
 ## Hints and Solution
 
 <details>
   <summary>Hint (how to handle uncompressed data)</summary>
 
-For uncompressed data, you don't need to do anything, just return it directly in the `decompress`
-function.
+For uncompressed data, you return it directly in the `decompress` function.
 
 </details>
 

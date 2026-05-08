@@ -1,7 +1,7 @@
 # Boolean data
 
-Recall from the [Plain Decoder](./step05-plain-decoder.md) section, boolean data type is encoded
-using
+This section will handle the boolean data type. Recall from the
+[Plain Decoder section](./step05-plain-decoder.md), boolean data type is encoded using
 [bit-packed encoding](https://parquet.apache.org/docs/file-format/data-pages/encodings/#BITPACKED).
 
 | Data type | Parquet type | Explanation           |
@@ -10,43 +10,46 @@ using
 
 ## Bit-packed encoding
 
-The name bit-packed already implies what it does: encodes each value into bits (with the same
-bit-width), then packs them together. Below is an example of encoding 10, 20, 30, 40 using 6
-bit-width.
+Bit-packed encoding encodes each value into bits (using the same bit-width), then packs them
+together (hence the name bit-packed). Below is an example of encoding 10, 20, 30, 40 using 6-bit
+width.
 
 ![bit-packed encodes data in general](images/bit-packed-general.png)
 
 *The figure above just gives you a rough idea of how bit-packed works in general, it isn't exactly
-what parquet bit-packed encoding does, we will look into this later in todo:section.*
+what parquet bit-packed encoding does, we will look into this later in
+[Bit-packed arbitrary bit-width](./step12-03-dictionary-decoder-bit-packed-arbitrary-bit-width.md).*
 
 ## Parquet bit-packed encoding for boolean data
 
-For boolean data, each value can be either `true` or `false`, so 1 bit-width is sufficient to encode
-those. Using 1 bit-width makes encoding and decoding much easier because there are no values
-crossing byte boundary.
-
-*We will see how to decode data using arbitrary bit-width later in todo:section.*
+For boolean data, each value can be either `true` or `false`, so 1-bit width is sufficient. Encoding
+and decoding using 1-bit width is much easier than arbitrary bit-width because there are no values
+crossing byte boundaries.
 
 ### Encode
 
-For encoding, every 8 bits are encoded into a group with LSB (Least Significant Bit) first, those
-with fewer than 8 bits are padded with 0.
+For encoding, values are packed together into 8-bit groups using LSB (Least Significant Bit) first.
+Groups with fewer than 8 bits are padded with 0.
 
 ![bit-packed encoding animation](./images/bit-packed-animation/encode/output.gif)
 
 ### Decode
 
-Decoding can be performed by fetching 8 bits at a time and shifting it until there are no remaining
-bits left (or if we get enough values).
+Decoding can be performed by fetching every 8-bit group at a time, then shifting bits until there is
+no remaining data left (or if we get enough values).
 
 ![bit-packed decoding animation](./images/bit-packed-animation/decode/output.gif)
 
-> You can optimize this by decoding more than 8 bits at a time (i.e. 32 bits).
+> You can optimize decoding by fetching more than 8 bits at a time (i.e. 32 bits).
 
 ## Task
 
-Implement the `bit_packed_decode` function in `src/decoder/bit_packed.rs`. For this task, you can be
-sure that the data type is boolean, and bit-width is 1.
+Implement the `bit_packed_decode` function in `src/decoder/bit_packed.rs`, then apply it to
+`plain_decode` for boolean data type.
+
+### `bit_packed_decode`
+
+This function takes the encoded page data as `Bytes` and returns a decoded vector of `Scalar`.
 
 ```rust,ignore
 pub fn bit_packed_decode(
@@ -59,7 +62,11 @@ pub fn bit_packed_decode(
 }
 ```
 
-You also need to handle the `Type::BOOLEAN` arm in `plain_decode`.
+For boolean data, the bit-width is always 1.
+
+### `plain_decode`
+
+Update the `plain_decode` function to handle boolean data type.
 
 ```rust,ignore
 pub fn plain_decode(

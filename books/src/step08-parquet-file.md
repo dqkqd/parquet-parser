@@ -19,14 +19,12 @@ Test case for this step is `step08_parquet_file`.
 ## Hints and Solution
 
 <details>
-  <summary>Hint (steps to parse a file)</summary>
+  <summary>Hint (steps to parse a parquet file)</summary>
 
-To parse a parquet file. There are 4 steps:
-
-- Read the file into `Vec<u8>` and convert it to `Bytes`.
-- Verify the magic number.
-- Read the file metadata.
-- Read the row groups.
+- Read the file into `Vec<u8>` and convert it to `Bytes`
+- Verify the magic number
+- Read the file metadata
+- Read the row groups
 
 </details>
 

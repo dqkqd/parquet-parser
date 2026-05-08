@@ -1,14 +1,14 @@
 # File Metadata
 
 The parser needs to read some metadata before parsing column data. The first one is the file
-metadata, located at the end of the file, before the footer magic number.
+metadata, located at the end of the file, right before the footer magic number.
 
 ![file metadata is located at the end of the file, before the footer magic number](images/file-metadata-position.png)
 
 ## Task
 
-Implement the `read_file_metadata` function in `src/file_metadata.rs`. It takes the whole file in
-`Bytes` and returns a thrift `FileMetaData`.
+Implement the `read_file_metadata` function in `src/file_metadata.rs`. It takes the entire file data
+as `Bytes` and returns a `FileMetaData` struct.
 
 ```rust,ignore
 pub fn read_file_metadata(data: Bytes) -> Result<FileMetaData> {
@@ -16,8 +16,8 @@ pub fn read_file_metadata(data: Bytes) -> Result<FileMetaData> {
 }
 ```
 
-To parse it, you should read the 4-byte file metadata length first, then the raw metadata, and use
-the `read_thrift_metadata` introduced in the [Overview](./overview.md#metadata) to convert it to
+To parse it, you should read the 4-byte file metadata length first, then the raw file metadata, and
+use the `read_thrift_metadata` introduced in the [Overview](./overview.md#metadata) to convert it to
 `FileMetaData`.
 
 ## Test

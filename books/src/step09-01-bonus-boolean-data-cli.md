@@ -1,4 +1,4 @@
-# Bonus: Test with CLI
+# Bonus: Interactive Testing
 
 The parser can now read boolean data. Let's test it!
 

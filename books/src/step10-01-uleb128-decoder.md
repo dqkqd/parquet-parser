@@ -15,40 +15,34 @@ MSB ------------------ LSB
 → 0xE5 0x8E 0x26            Output stream (LSB to MSB)
 ```
 
+One important note is that the last byte has its MSB set to `0` instead of `1`; this signals the
+decoder to stop fetching bytes when decoding data.
+
 ## Decode
 
-Decoding is the reverse operation: it takes the bytes, strips the MSB in each byte, then packs them
-together into an integer.
+Decoding is a reverse operation: it strips the MSB (Most Significant Bit) in each byte, and packs
+them together. Let's visualize it.
 
-```text
-MSB ------------------ LSB
-    0xE5     0x8E     0x26
-11100101 10001110 00100110
- 0100110  0001110  1100101  strip the leading bit
-      10011000011101100101  group together
-```
+![ULEB128 decoder start](images/uleb-128-decode-start.png)
 
-The tricky part is that actual data might contain redundant bytes (in our case, the run encoded
-values after the header), which means the decoder must know when to stop fetching bytes.
+Take the first byte and strip its MSB.
 
-```text
-0xE5     0x8E     0x26     <redundant bytes>
-```
+![The first byte is taken from encoded data and put to decoded data](images/uleb-128-decode-first-byte.png)
 
-This can be solved by looking at the MSB: because all groups except the last one have `1` at their
-MSB, if the decoder sees a byte with leading `0`, it must stop.
+Take the second byte and strip its MSB.
 
-```text
-    0xE5     0x8E     0x26     <redundant bytes>
-11100101 10001110 00100110     <remaining bits>
-                  ^
-          last byte for the header
-```
+![The second byte is taken from encoded data and put to decoded data](images/uleb-128-decode-second-byte.png)
+
+Take the third byte and strip its MSB. This is also the last byte because its MSB is 0.
+
+![The last byte is taken from encoded data and put to decoded data](images/uleb-128-decode-the-last-byte.png)
+
+The decoded value is `010011000011101100101`, which is `624485`.
 
 ## Task
 
-Implement the `uleb128_decode` function in `src/decoder/uleb128.rs`. It takes encoded `Bytes` and
-returns the decoded integer with the remaining bytes.
+Implement the `uleb128_decode` function in `src/decoder/uleb128.rs`. It takes the encoded `Bytes`
+and returns a decoded integer with the remaining bytes.
 
 ```rust,ignore
 pub fn uleb128_decode(encoded_data: Bytes) -> Result<(u64, Bytes)> {

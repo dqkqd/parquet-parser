@@ -1,10 +1,10 @@
-# Bonus: Test with CLI
+# Bonus: Interactive Testing
 
 The parser can now read data with NULL values. Let's test it!
 
 ## Data
 
-The data is in `data/nulls.csv`
+The data is in `data/nulls.csv`.
 
 ```csv
 col_i64,col_string
@@ -30,7 +30,7 @@ cargo run read nulls.parquet
 
 ## Result
 
-You can see there is `null` values added.
+You can see there are `null` values added.
 
 ```bash
     Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.18s

@@ -1,6 +1,7 @@
-# RLE arbitrary bit-width
+# RLE Integers
 
-This task handles RLE for an arbitrary bit-width.
+In this step, we handle RLE run with arbitrary bit-width. This is similar to
+[Bit-packed integers](./step12-04-dictionary-decoder-bit-packed-arbitrary-bit-width.md).
 
 ## Task
 
@@ -19,7 +20,7 @@ pub fn rle_decode(
 
 ## Test
 
-Test case for this step is `step12_04_dictionary_decoder_rle`.
+Test case for this step is `step12_05_dictionary_decoder_rle`.
 
 ## Hints and Solution
 

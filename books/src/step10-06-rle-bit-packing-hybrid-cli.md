@@ -1,6 +1,6 @@
-# Bonus: Test with CLI
+# Bonus: Interactive Testing
 
-The parser can now read data encoded with Dictionary Encoding. Let's test it!
+The parser can now read data encoded with RLE Bit-packed Hybrid Encoding. Let's test it!
 
 ## Data
 
@@ -20,11 +20,12 @@ true,8,8.8,eight
 
 ## Command
 
-To apply Dictionary Encoding, set the dictionary flag: `--dictionary`.
+To write to a parquet file using RLE Bit-packed Hybrid Encoding, set the encoding flag
+`--encodings <COLUMN_NAME>=rle`
 
 ```bash
 # write csv to a parquet file
-cargo run write data/all.csv all.parquet --encodings col_bool=rle --dictionary
+cargo run write data/all.csv all.parquet --encodings col_bool=rle
 
 # read the parquet file
 cargo run read all.parquet
@@ -33,7 +34,7 @@ cargo run read all.parquet
 ## Result
 
 ```bash
-    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.17s
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.18s
      Running `target/debug/parquet-parser read all.parquet`
 shape: (8, 4)
 ┌──────────┬─────────────┬──────────┬────────────┐
@@ -54,7 +55,7 @@ shape: (8, 4)
 
 ## Metadata
 
-You can see from the metadata, there is a new `RLE_DICTIONARY` encoding added.
+You can see from the metadata, the boolean column is encoded using RLE (no PLAIN included).
 
 ```bash
 cargo run metadata all.parquet
@@ -64,10 +65,17 @@ cargo run metadata all.parquet
     Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.18s
      Running `target/debug/parquet-parser metadata all.parquet`
 ...
+column 0:
+--------------------------------------------------------------------------------
+column type: BOOLEAN
+column path: "col_bool"
+encodings: RLE
+...
+
 column 1:
 --------------------------------------------------------------------------------
 column type: INT64
 column path: "col_integer"
-encodings: PLAIN RLE RLE_DICTIONARY
+encodings: PLAIN RLE
 ...
 ```

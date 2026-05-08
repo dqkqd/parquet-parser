@@ -1,33 +1,32 @@
-# Bit-packed arbitrary bit-width
+# Bit-packed Integers
 
-We have implemented the dictionary decoder with 2 values and 1 value. Let's make it work with an
-arbitrary number of unique values. To do that, the parser must be able to decode the RLE Bit-packing
-hybrid encoded data with arbitrary bit-width. One important note is that we only need to handle 2
-data types: Boolean and Integer (`INT32`).
+We have implemented the dictionary decoder for 2 values and 1 value. This time, we make it work with
+any number of unique values. This means the RLE Bit-packing Hybrid decoder must be able to decode
+data with arbitrary bit-width.
 
-This step focuses on Bit-packed encoding; the next step handles RLE.
+In this step, we handle the bit-packing case, the next step will be the RLE case.
 
 ## Encode
 
-Encoding is pretty similar to [1-bit width](./step09-boolean-data.html#encode). Let's visualize it
-using the
+Encoding is pretty similar to [1-bit width](./step09-boolean-data.md#encode): encode the data and
+pack them into groups of bytes. One issue with larger bit-width is that the encoded bits might cross
+group boundaries. Let's visualize it using the
 [example from the spec](https://parquet.apache.org/docs/file-format/data-pages/encodings/#RLE) with
 3-bit width.
 
 ![Bit-packed arbitrary encoding raw data example](images/bit-packed-arbitrary-bit-width-encode-raw-data.png)
 
-Encoded data is packed into 8-bit groups.
+Encoded data is packed into 8-bit groups using different colors.
 
 ![Bit-packed arbitrary encoding animation](./images/bit-packed-arbitrary-bit-width-animation/encode/output.gif)
 
 ## Decode
 
-Similar to [1-bit width](./step09-boolean-data.md#decode), we can fetch 8-bit group at a time and
-decode them. However, with an arbitrary bit-width, the encoded value might span across group
-boundaries. We can handle this by fetching groups into a buffer and keeping track of how many bits
-it contains.
+In [1-bit width](./step09-boolean-data.md#decode), we fetch and decode an 8-bit group at a time. To
+handle the encoded bits crossing group boundaries in larger bit-width, we fetch groups into a buffer
+and decode it instead of the actual groups.
 
-Let's see an example. This is the packed data with 3-bit width.
+Let's see an example. This is a packed data with 3-bit width.
 
 ![Bit-packed arbitrary decoding start](images/bit-packed-arbitrary-bit-width-decode-01.png)
 
@@ -40,8 +39,8 @@ Then the next 3 bits.
 
 ![Bit-packed decoder decodes the next 3 bits](./images/bit-packed-arbitrary-bit-width-animation/decode/03.png)
 
-Now, the buffer only has 2 bits (this value spans a group boundary). The decoder needs to fetch the
-next group from the packed encoded data.
+Now, the buffer only has 2 bits (the value spans a group boundary), so the decoder fetches the next
+group from the packed encoded data.
 
 ![Bit-packed decoder fetches the next group](./images/bit-packed-arbitrary-bit-width-animation/decode/05.png)
 
@@ -71,7 +70,7 @@ pub fn bit_packed_decode(
 }
 ```
 
-There are only two data types we need to handle: `Type::BOOLEAN` and `Type::INT32`.
+The data type for indexes should be `Type::INT32`, this must be passed by the caller.
 
 ## Test
 
@@ -82,7 +81,8 @@ Test case for this step is `step12_03_dictionary_decoder_bit_packed`.
 <details>
   <summary>Hint (how to fetch groups)</summary>
 
-Groups should be fetched to the left of the buffer.
+Groups should be fetched to the left of the buffer, this can be done using bit-shift and bit-or, you
+also need to keep track of how many bits the buffer contains.
 
 ```rust,ignore
 let group = encoded_data.get_u8() as u64;

@@ -3,37 +3,28 @@
 We know how to get all pages for a column chunk and how to decode an individual page. Now, let's put
 all of them together and completely parse a column chunk.
 
-![a column chunk contains multiple encoded pages](images/a-column-chunk-contains-multiple-encoded-pages.png)
+![a column chunk contains multiple pages](images/a-column-chunk-contains-multiple-pages.png)
 
-We use [polars's Column](https://docs.rs/polars/latest/polars/prelude/enum.Column.html) to represent
-a column in our parser. There is a helper function that converts a vector of `Scalar` into a
-`Column` for you.
-
-```rust,ignore
-fn column_from_scalars(scalars: Vec<Scalar>, column_metadata: &ColumnMetaData) -> Result<Column> {
-    let values: Vec<AnyValue<'_>> = scalars
-        .into_iter()
-        .map(|scalar| scalar.into_value())
-        .collect();
-
-    let column_name = column_metadata.path_in_schema.join(".");
-    let series = Series::from_any_values(column_name.into(), &values, true)?;
-    let column = Column::from(series);
-
-    Ok(column)
-}
-```
+To represent a column, we use
+[Polars Column](https://docs.rs/polars/latest/polars/prelude/enum.Column.html).
 
 ## Task
 
-Implement the `read_column` function in `src/column.rs`. It takes the whole file data in `Bytes` and
-returns a `Column`.
+Implement the `read_column` function in `src/column.rs`. It takes the entire file data as `Bytes`
+and returns a `Column` data for a given column chunk.
 
 ```rust,ignore
 pub fn read_column(data: Bytes, column_chunk: &ColumnChunk) -> Result<Column> {
     todo!("step06: implement read column")
 }
 ```
+
+Some important notes:
+
+- Everything you need to parse column data is stored in the column metadata
+- To get the number of values in a page, you can use `Page::num_values()`
+- To convert a vector of `Scalar` to `Column`, you might find the helper `column_from_scalars`
+  useful
 
 ## Test
 
@@ -59,13 +50,6 @@ column_chunk
   <summary>Hint (how to get the parquet data type)</summary>
 
 The parquet data type can be retrieved from `column_metadata.type_`.
-
-</details>
-
-<details>
-  <summary>Hint (how to get the number of values)</summary>
-
-The number of values in a page can be retrieved using `Page::num_values()` function.
 
 </details>
 

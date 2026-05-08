@@ -2,11 +2,13 @@
 
 ## How to start
 
-To start, clone this [git repository](https://github.com/dqkqd/parquet-parser/), and checkout the
+To start, clone [this repository](https://github.com/dqkqd/parquet-parser/), and checkout the
 `starter` branch.
 
 ```bash
 git clone https://github.com/dqkqd/parquet-parser.git
+
+cd parquet-parser
 
 git checkout starter
 ```
@@ -15,8 +17,6 @@ git checkout starter
 
 Each step has several test cases in `tests/integration/mod.rs`, all of them are disabled by default.
 You should uncomment the correct tests when implementing a specific step.
-
-todo: update this
 
 ```rust,ignore
 // mod step01_magic;
@@ -28,19 +28,7 @@ todo: update this
 // mod step07_row_group;
 // mod step08_parquet_file;
 // mod step09_boolean_column;
-// mod step10_01_uleb128_decoder;
-// mod step10_02_run_header_and_encoded_data;
-// mod step10_03_rle_decoder;
-// mod step10_04_runs_decoder;
-// mod step11_dictionary_page;
-// mod step12_01_dictionary_decoder_two_values;
-// mod step12_02_dictionary_decoder_one_value;
-// mod step12_03_dictionary_decoder_bit_packed;
-// mod step12_04_dictionary_decoder_rle;
-// mod step13_01_definition_levels_data;
-// mod step13_02_definition_levels_decode;
-// mod step13_03_nulls;
-// mod step14_compression;
+// ...
 ```
 
 ## Tips

@@ -1,4 +1,4 @@
-# Bonus: Test with CLI
+# Bonus: Interactive Testing
 
 This time, we can read a real parquet file (Not those created from our CLI).
 

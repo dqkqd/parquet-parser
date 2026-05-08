@@ -1,14 +1,14 @@
 # Magic Number
 
-The magic number tells the parser whether it is reading a parquet file. This *number* is a 4-byte
-`PAR1` and is located at the beginning and at the end of a file.
+The magic number tells the parser whether it is reading a parquet file. This is a 4-byte `PAR1` and
+is located at the beginning and at the end of a file.
 
 ![magic number is located at the beginning and at the end of a file](images/magic-number-locations.png)
 
 ## Task
 
-Implement the `ensure_header_footer_magic` function in `src/magic.rs`. It takes a whole file data in
-`Bytes` and returns an error if the data is not a parquet file.
+Implement the `ensure_header_footer_magic` function in `src/magic.rs`. It takes the entire file data
+as `Bytes` and returns an error if this is not a parquet file.
 
 ```rust,ignore
 pub fn ensure_header_footer_magic(data: Bytes) -> Result<()> {
@@ -25,7 +25,7 @@ To verify the implementation, uncomment the test in `tests/integration/mod.rs`.
 +mod step01_magic;
 ```
 
-And run
+And run:
 
 ```bash
 cargo test
@@ -36,7 +36,8 @@ cargo test
 <details>
   <summary>Hint</summary>
 
-*There is no hint for this task.*
+You can use `starts_with` and `ends_with` functions to check whether the magic number is correctly
+present at both ends of the file.
 
 </details>
 

@@ -1,14 +1,15 @@
 # Plain Decoder
 
-We have all pages data for a single column chunk, but we can't extract the actual values out yet. As
-mentioned in the [Overview](./overview.md), we need to decode the page data. This step tackles the
-simplest one:
+We now have all pages for a single column chunk. However, all of them are encoded. In this step, we
+will decode page data and extract the actual column values. Let's start with the simplest one:
 [Plain encoding](https://parquet.apache.org/docs/file-format/data-pages/encodings/#PLAIN).
 
 ![All values in plain encoding are encoded back to back separately](images/plain-encoding-encodes-values-back-to-back.png)
 
+## Plain Encoding
+
 In plain encoding, each value is encoded separately depending on the column data type. For our
-parser, only these data types are supported (the Explanation part is copied from the
+parser, only these data types are supported (the explanations are taken from the
 [spec](https://parquet.apache.org/docs/file-format/data-pages/encodings/#PLAIN)).
 
 | Data type | Parquet type | Explanation                                                                  |
@@ -20,9 +21,10 @@ parser, only these data types are supported (the Explanation part is copied from
 | DOUBLE    | DOUBLE       | 8 bytes IEEE little endian                                                   |
 | STRING    | BYTE_ARRAY   | length in 4 bytes little endian followed by the bytes contained in the array |
 
-To make it simple for implementation, we use
-[polar's Scalar](https://docs.rs/polars/latest/polars/prelude/struct.Scalar.html) to represent the
-decoded value. A `Scalar` can be created like this.
+To represent a decoded value in code, we use
+[Polars Scalar](https://docs.rs/polars/latest/polars/prelude/struct.Scalar.html). This makes the
+implementation much simpler as we don't have to deal with type erasure, type casting, etc. A
+`Scalar` can be created like this.
 
 ```rust,ignore
 let scalar_integer = Scalar::from(1i32);
@@ -36,9 +38,8 @@ Implement two functions `plain_decode` in `src/decoder/plain.rs` and `decode_pag
 
 ### `plain_decode`
 
-This function takes page's data in `Bytes` and returns the decoded vector of `Scalar` based on the
-data type. (You don't need to implement the boolean data type, it requires different encoding which
-will be covered in todo:section.)
+This function takes the encoded page data as `Bytes` and returns a decoded vector of `Scalar` based
+on the data type. The `num_values` is the expected value for the vector.
 
 ```rust,ignore
 pub fn plain_decode(
@@ -58,23 +59,35 @@ pub fn plain_decode(
 }
 ```
 
-To avoid messing with unicode data, we assume all `BYTE_ARRAY` data can be converted to `String`
-without error. In other words, this never panics.
+Some important notes:
 
-```rust,ignore
-String::from_utf8(data).unwrap()
-```
+- You can get the encoded page data using `Page::encoded_values()`
+
+- You don't have to handle `BOOLEAN` data yet, it requires different encoding, which will be covered
+  in [Boolean Data section](./step09-boolean-data.md)
+
+- To avoid messing with unicode data, we assume all `BYTE_ARRAY` data can be converted to `String`
+  without error. In other words, this never panics
+
+  ```rust,ignore
+  String::from_utf8(data).unwrap()
+  ```
 
 ### `decode_page`
 
-This is a wrapper around all supported decoders, it checks page's encoding and applies the correct
-decoder. You need to handle the `Encoding::PLAIN` arm in this step.
+This is a wrapper around all supported decoders, it checks the page's encoding and applies the
+correct decoder. You need to handle the `Encoding::PLAIN` arm in this step.
 
 ```rust,ignore
-todo::copy
+pub fn decode_page(page: &Page, parquet_type: Type, num_values: usize) -> Result<Vec<Scalar>> {
+    match page.encoding() {
+        Encoding::PLAIN => todo!("step05: plain decoder"),
+        Encoding::RLE => todo!("step10-04: rle bit-packed hybrid decoder"),
+        Encoding::RLE_DICTIONARY => todo!("step12-01: dictionary decoder"),
+        e => unimplemented!("decode_data_page: unsupported encoding {:?}", e),
+    }
+}
 ```
-
-You can get the encoded values using `Page::encoded_values()` function.
 
 ## Test
 
@@ -86,7 +99,8 @@ Test case for this step is `step05_plain_decoder`.
   <summary>Hint (how to decode non-string types)</summary>
 
 Some functions from the [bytes crate docs](https://docs.rs/bytes/latest/bytes/index.html) are useful
-to extract primitive types. The extracted value can be converted to `Scalar` using `Scalar::from`
+to extract primitive types. The extracted value can be converted to `Scalar` using `Scalar::from`.
+For example, this decodes the `INT32` data.
 
 ```rust,ignore
 let scalar = Scalar::from(data.get_i32_le());
@@ -97,7 +111,7 @@ let scalar = Scalar::from(data.get_i32_le());
 <details>
   <summary>Hint (how to decode string type)</summary>
 
-String uses a variable length, its first 4 bytes is the length and then the actual string value.
+String uses a variable length, the first 4 bytes is the length followed by the actual string value.
 
 ```rust,ignore
 let length = data.get_u32_le() as usize;
@@ -117,7 +131,7 @@ Scalar::from(PlSmallStr::from_string(string))
 <details>
   <summary>Solution</summary>
 
-`plain_decode` function
+`plain_decode`:
 
 ```rust,ignore
 pub fn plain_decode(
@@ -164,10 +178,17 @@ pub fn plain_decode(
 }
 ```
 
-`decode_page` function
+`decode_page`:
 
 ```rust,ignore
-todo:section
+pub fn decode_page(page: &Page, parquet_type: Type, num_values: usize) -> Result<Vec<Scalar>> {
+    match page.encoding() {
+        Encoding::PLAIN => plain_decode(page.encoded_values(), parquet_type, num_values),
+        Encoding::RLE => todo!("step10-04: rle bit-packed hybrid decoder"),
+        Encoding::RLE_DICTIONARY => todo!("step12-01: dictionary decoder"),
+        e => unimplemented!("decode_data_page: unsupported encoding {:?}", e),
+    }
+}
 ```
 
 </details>

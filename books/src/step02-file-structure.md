@@ -1,12 +1,11 @@
-# Understand File Structure
+# Understand File Format
 
-Before implementing further, let's look at the parquet file structure and its file metadata. As
-documented in the
-[file metadata spec](https://parquet.apache.org/docs/file-format/metadata/#file-metadata), a parquet
-file has multiple row groups, each row group has multiple columns, and each column has multiple
-pages, which contain the actual data.
+Before implementing further, let's look at the parquet file format and its file metadata.
+
+A parquet file has multiple row groups; each row group has multiple columns; each column has
+multiple pages, which contain the actual column data.
 
 ![parquet file structure, a file has many row groups, a row group has many columns, a column has many pages](images/parquet-file-structure.png)
 
-To parse all columns, the parser needs to go down to the page level, extract the actual data and
-concatenate them back as it goes to the upper levels.
+The data only exists at the page level, which means to parse all the data, the parser must go down
+to the page level, get the data, and merge it back.

@@ -1,7 +1,8 @@
 # Row Group
 
-A row group contains multiple columns. A file contains multiple row groups. After finishing this
-step, we can read all the data in a parquet file.
+From the [Understand File Format section](./step02-file-structure.md#understand-file-format), we
+know a parquet file has multiple row groups, each row group has multiple column chunks. In this
+step, we will read all of them!
 
 ![row groups and column chunks data](images/a-row-group-contains-multiple-columns-a-file-contains-multiple-row-groups.png)
 
@@ -10,9 +11,8 @@ The relationship above looks like this from the
 
 ![Metadata relationship from the spec, a file metadata contains multiple row groups, a row group contains multiple columns](images/row-groups-metadata-relationship.png)
 
-For representing parsed data in the parser, we use
-[polars's DataFrame](https://docs.rs/polars/latest/polars/frame/struct.DataFrame.html), it is
-recommended to look at their documentation before implementing the task.
+As some of you might expect, to represent the data for a row group and a parquet file, we use
+[Polars DataFrame](https://docs.rs/polars/latest/polars/frame/struct.DataFrame.html).
 
 ## Task
 
@@ -20,9 +20,7 @@ Implement two functions `read_row_group` and `read_row_groups` in `src/row_group
 
 ### `read_row_group`
 
-This function takes the whole file data in `Bytes` and returns a `DataFrame`. You can use
-[`DataFrame::new_infer_height`](https://docs.rs/polars/latest/polars/frame/struct.DataFrame.html#method.new_infer_height)
-to group multiple columns together into a single `DataFrame`.
+This function takes the entire file data as `Bytes` and returns a `DataFrame`.
 
 ```rust,ignore
 pub fn read_row_group(data: Bytes, row_group: &RowGroup) -> Result<DataFrame> {
@@ -30,17 +28,22 @@ pub fn read_row_group(data: Bytes, row_group: &RowGroup) -> Result<DataFrame> {
 }
 ```
 
+You can use
+[`DataFrame::new_infer_height`](https://docs.rs/polars/latest/polars/frame/struct.DataFrame.html#method.new_infer_height)
+to group multiple columns together into a single `DataFrame`.
+
 ### `read_row_groups`
 
-This function takes the whole file data in `Bytes` and returns a `DataFrame`. You can use
-[concat](https://docs.rs/polars/latest/polars/prelude/fn.concat.html) to concatenate the `DataFrame`
-in all groups into a single `DataFrame`.
+This function takes the entire file data as `Bytes` and returns a `DataFrame`.
 
 ```rust,ignore
 pub fn read_row_groups(data: Bytes, file_metadata: &FileMetaData) -> Result<DataFrame> {
     todo!("step07: implement read row groups")
 }
 ```
+
+You can use [concat](https://docs.rs/polars/latest/polars/prelude/fn.concat.html) to concatenate the
+`DataFrame` from all groups into a single `DataFrame`.
 
 ## Test
 
@@ -49,16 +52,9 @@ Test case for this step is `step07_row_group`.
 ## Hints and Solution
 
 <details>
-  <summary>Hint (how to get column chunk)</summary>
-
-`RowGroup` has a member `columns` which contains a vector of `ColumnChunk`.
-
-</details>
-
-<details>
   <summary>Hint (How to concatenate multiple data frames)</summary>
 
-To concatenate data frames, you can convert the `DataFrame` into a `LazyFrame`, then use
+Convert the `DataFrame` into a `LazyFrame`, then use the
 [`concat`](https://docs.rs/polars/latest/polars/prelude/fn.concat.html) function.
 
 ```rust,ignore
@@ -81,7 +77,7 @@ concat(
 <details>
   <summary>Solution</summary>
 
-`read_row_group` function
+`read_row_group`:
 
 ```rust,ignore
 pub fn read_row_group(data: Bytes, row_group: &RowGroup) -> Result<DataFrame> {
@@ -95,7 +91,7 @@ pub fn read_row_group(data: Bytes, row_group: &RowGroup) -> Result<DataFrame> {
 }
 ```
 
-`read_row_groups` function
+`read_row_groups`:
 
 ```rust,ignore
 pub fn read_row_groups(data: Bytes, file_metadata: &FileMetaData) -> Result<DataFrame> {

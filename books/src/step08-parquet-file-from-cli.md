@@ -1,7 +1,6 @@
-# Bonus: Test with CLI
+# Bonus: Interactive Testing
 
-Since our parser can read a complete parquet file, let's see it in action. This section introduces
-an interactive way to test it: Using CLI.
+This section introduces an interactive way to test the parser using the CLI.
 
 ## CLI
 
@@ -21,9 +20,9 @@ Options:
   -h, --help  Print help
 ```
 
-At the moment, the parser can only read parquet files with plain encoding, no compression, such
-files are rare in the wild. The `write` command is a convenient way to convert CSV into parquet (its
-default arguments generates a plain encoding with no compression parquet file).
+At the moment, the parser can only read parquet files with plain encoding, no compression, etc.;
+such files are rare in the wild. The `write` command is a convenient way to convert CSV into parquet
+(the default arguments creates a plain encoding with no compression parquet file).
 
 ```bash
 Write a csv file to a parquet file
@@ -56,7 +55,7 @@ Options:
 ## Try it out
 
 Let's convert
-[this csv file](https://raw.githubusercontent.com/tobilg/public-cloud-provider-ip-ranges/bda4bc1ac501f8bab9cd618b47eb336328e732cc/data/providers/all.csv),
+[this csv file](https://raw.githubusercontent.com/tobilg/public-cloud-provider-ip-ranges/bda4bc1ac501f8bab9cd618b47eb336328e732cc/data/providers/all.csv)
 to parquet, and read it using our parser.
 
 ```bash
@@ -72,11 +71,11 @@ cargo run read public-cloud-provider-ip-ranges.parquet
 
 ### Result
 
-This is the result
+This is the result:
 
 ```bash
-    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.19s
-     Running `target/debug/parquet-parser all.parquet`
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.34s
+     Running `target/debug/parquet-parser read public-cloud-provider-ip-ranges.parquet`
 shape: (62_689, 6)
 ┌────────────────┬─────────────────┬──────────────┬─────────────────┬────────────────┬────────────────┐
 │ cloud_provider ┆ cidr_block      ┆ ip_address   ┆ ip_address_mask ┆ ip_address_cnt ┆ region         │
@@ -105,8 +104,8 @@ You can also inspect the metadata using the `metadata` command:
 cargo run metadata public-cloud-provider-ip-ranges.parquet
 ```
 
-The result is quite verbose, but we can see that all of the columns are encoded using plain
-encoding. (The `RLE` is for definition levels, )
+The output is quite verbose, but we can see that all of the columns are encoded using plain encoding
+(you can ignore `RLE` as it is used for definition levels).
 
 ```diff
 ...
