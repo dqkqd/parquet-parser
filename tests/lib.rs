@@ -21,8 +21,9 @@ pub fn make_parquet_file(data: &str, args: &[&[&'static str]]) -> Result<NamedTe
 
     let parquet_file = NamedTempFile::new()?;
 
-    let mut cmd = Command::new(env!("CARGO_BIN_EXE_write"));
+    let mut cmd = Command::new(env!("CARGO_BIN_EXE_parquet-parser"));
     let mut cmd = cmd
+        .arg("write")
         .arg(csv_file.path().to_str().unwrap())
         .arg(parquet_file.path().to_str().unwrap());
     for args in args {

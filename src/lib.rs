@@ -1,3 +1,4 @@
+pub mod cli;
 #[allow(clippy::all)]
 pub mod format;
 pub mod thrift;
