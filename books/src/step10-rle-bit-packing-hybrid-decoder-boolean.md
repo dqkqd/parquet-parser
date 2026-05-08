@@ -1,4 +1,4 @@
-# RLE Bit-packing Hybrid Decoder (Boolean)
+# RLE Bit-packing Hybrid Decoder
 
 Until now, the parser can only read files with
 [PLAIN Encoding](https://parquet.apache.org/docs/file-format/data-pages/encodings/#PLAIN). In the
