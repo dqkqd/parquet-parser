@@ -28,21 +28,24 @@ fn parquet_type_to_arrow_type(parquet_type: Type) -> DataType {
 pub fn write_parquet(
     input: Vec<u8>,
     dictionary_enabled: bool,
-    encoding: Encoding,
+    encodings: &[(String, Encoding)],
     compression: Compression,
     rows_per_page: Option<usize>,
     rows_per_group: Option<usize>,
     data_types_override: Option<HashMap<String, Type>>,
 ) -> Result<Vec<u8>> {
-    let props = WriterProperties::builder()
-        .set_encoding(encoding)
+    let mut props = WriterProperties::builder()
         .set_compression(compression)
         .set_dictionary_enabled(dictionary_enabled)
         .set_created_by("Hello parquet!".to_string())
         .set_data_page_row_count_limit(rows_per_page.unwrap_or(DEFAULT_DATA_PAGE_ROW_COUNT_LIMIT))
         .set_write_batch_size(1) // ensure we don't write across page boundary
-        .set_max_row_group_row_count(rows_per_group)
-        .build();
+        .set_max_row_group_row_count(rows_per_group);
+
+    for (column, encoding) in encodings {
+        props = props.set_column_encoding(column.clone().into(), *encoding)
+    }
+    let props = props.build();
 
     let mut cursor = Cursor::new(input);
     let format = Format::default().with_header(true);

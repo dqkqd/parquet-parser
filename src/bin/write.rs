@@ -41,8 +41,8 @@ struct Cli {
     #[arg(long, default_value_t = false)]
     dictionary: bool,
 
-    #[arg(long, value_enum, default_value_t = CliEncoding::Plain)]
-    encoding: CliEncoding,
+    #[arg(long, value_enum, value_parser = parse_column_encoding)]
+    encodings: Vec<(String, Encoding)>,
 
     #[arg(long, value_enum, default_value_t = CliCompression::Uncompressed)]
     compression: CliCompression,
@@ -60,19 +60,25 @@ struct Cli {
 }
 
 impl Cli {
-    fn parquet_encoding(&self) -> Encoding {
-        match self.encoding {
-            CliEncoding::Plain => Encoding::PLAIN,
-            CliEncoding::Rle => Encoding::RLE,
-        }
-    }
-
     fn parquet_compression(&self) -> Compression {
         match self.compression {
             CliCompression::Uncompressed => Compression::UNCOMPRESSED,
             CliCompression::Snappy => Compression::SNAPPY,
         }
     }
+}
+
+fn parse_column_encoding(s: &str) -> Result<(String, Encoding)> {
+    let (column, encoding) = s
+        .split_once('=')
+        .with_context(|| "Invalid column=encoding: no `=` found in {s}")?;
+    let encoding = match encoding {
+        "rle" => Encoding::RLE,
+        _ => {
+            bail!("Unsupported encoding, expected: [rle]")
+        }
+    };
+    Ok((column.to_string(), encoding))
 }
 
 fn parse_column_dtype(s: &str) -> Result<(String, Type)> {
@@ -103,7 +109,7 @@ fn make_parquet(cli: Cli) -> Result<()> {
     let out = write_parquet(
         data,
         cli.dictionary,
-        cli.parquet_encoding(),
+        &cli.encodings,
         cli.parquet_compression(),
         cli.rows_per_page,
         cli.rows_per_group,

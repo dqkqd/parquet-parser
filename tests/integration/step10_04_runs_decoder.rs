@@ -24,7 +24,10 @@ true
 false
 true
 "#,
-        &[&["--encoding", "rle"], &["--rows-per-page", rows_per_page]],
+        &[
+            &["--encodings", "boolean=rle"],
+            &["--rows-per-page", rows_per_page],
+        ],
     )?;
 
     assert_snapshot!(read_parquet(parquet_file)?, @"
@@ -67,7 +70,10 @@ true
 true
 true
 "#,
-        &[&["--encoding", "rle"], &["--rows-per-page", rows_per_page]],
+        &[
+            &["--encodings", "boolean=rle"],
+            &["--rows-per-page", rows_per_page],
+        ],
     )?;
 
     assert_snapshot!(read_parquet(parquet_file)?, @"
@@ -107,7 +113,10 @@ fn bit_packed_many_runs(#[case] rows_per_page: &'static str) -> Result<()> {
 
     let parquet_file = make_parquet_file(
         &parquet_data.join("\n"),
-        &[&["--encoding", "rle"], &["--rows-per-page", rows_per_page]],
+        &[
+            &["--encodings", "boolean=rle"],
+            &["--rows-per-page", rows_per_page],
+        ],
     )?;
     let df = read_parquet(parquet_file)?;
     assert_eq!(df.height(), length);
@@ -136,7 +145,10 @@ fn rle_many_runs(#[case] rows_per_page: &'static str) -> Result<()> {
 
     let parquet_file = make_parquet_file(
         &parquet_data.join("\n"),
-        &[&["--encoding", "rle"], &["--rows-per-page", rows_per_page]],
+        &[
+            &["--encodings", "boolean=rle"],
+            &["--rows-per-page", rows_per_page],
+        ],
     )?;
     let df = read_parquet(parquet_file)?;
     assert_eq!(df.height(), length);
