@@ -1,9 +1,6 @@
 use anyhow::Result;
 use parquet::data_type::AsBytes;
-use parquet_parser::{
-    file_metadata::read_file_metadata,
-    page::read_page,
-};
+use parquet_parser::{file_metadata::read_file_metadata, page::read_page};
 
 use crate::make_parquet_bytes;
 
@@ -33,6 +30,15 @@ col1
     // header
     assert_eq!(page.num_values(), 3);
     assert!(!page.is_dictionary());
+
+    // definition levels
+    let definition_levels = page.definition_levels();
+    assert!(definition_levels.is_some());
+    // the definition levels doesn't make sense yet, just ensure you get the bytes correct
+    assert_eq!(
+        definition_levels.unwrap().as_ref(),
+        [2u8, 0u8, 0u8, 0u8, 6u8, 1u8]
+    );
 
     // encoded values
     assert_eq!(
