@@ -18,7 +18,7 @@ use crate::{
 pub fn decode_page(page: &Page, parquet_type: Type, num_values: usize) -> Result<Vec<Scalar>> {
     match page.encoding() {
         Encoding::PLAIN => todo!("step05: plain decoder"),
-        Encoding::RLE => todo!("step10-04: rle bit-packed hybrid decoder"),
+        Encoding::RLE => todo!("step10-05: rle bit-packing hybrid decoder"),
         Encoding::RLE_DICTIONARY => todo!("step12-01: dictionary decoder"),
         e => unimplemented!("decode_data_page: unsupported encoding {:?}", e),
     }

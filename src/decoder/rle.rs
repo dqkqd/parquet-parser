@@ -18,5 +18,5 @@ pub fn rle_decode(
     bit_width: u8,
     num_values: usize,
 ) -> Result<Vec<Scalar>> {
-    todo!("step10-03: implement rle decoder")
+    todo!("step10-04: decode a rle run")
 }

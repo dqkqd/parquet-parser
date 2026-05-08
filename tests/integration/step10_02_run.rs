@@ -1,7 +1,7 @@
 use anyhow::Result;
 use bytes::Bytes;
 use parquet::data_type::AsBytes;
-use parquet_parser::decoder::rle_bit_packing_hybrid::{RleBitPackedRun, get_rle_bit_packed_run};
+use parquet_parser::decoder::rle_bit_packing_hybrid::{RleBitPackedRun, read_rle_bit_packed_run};
 
 #[test]
 fn bit_packed_run_width_1() -> Result<()> {
@@ -18,24 +18,24 @@ fn bit_packed_run_width_1() -> Result<()> {
     );
 
     // first run
-    let (run, remaining) = get_rle_bit_packed_run(data, 1)?;
+    let (run, remaining) = read_rle_bit_packed_run(data, 1)?;
     assert_eq!(
         run,
         RleBitPackedRun::BitPacked {
             run_len: 16,
             bit_width: 1,
-            bit_packed_values: Bytes::from(10u16.as_bytes()),
+            encoded_values: Bytes::from(10u16.as_bytes()),
         }
     );
 
     // second run
-    let (run, remaining) = get_rle_bit_packed_run(remaining, 1)?;
+    let (run, remaining) = read_rle_bit_packed_run(remaining, 1)?;
     assert_eq!(
         run,
         RleBitPackedRun::BitPacked {
             run_len: 32,
             bit_width: 1,
-            bit_packed_values: Bytes::from(10u32.as_bytes()),
+            encoded_values: Bytes::from(10u32.as_bytes()),
         }
     );
 
@@ -61,24 +61,24 @@ fn bit_packed_run_width_3() -> Result<()> {
     );
 
     // first run
-    let (run, remaining) = get_rle_bit_packed_run(data, 3)?;
+    let (run, remaining) = read_rle_bit_packed_run(data, 3)?;
     assert_eq!(
         run,
         RleBitPackedRun::BitPacked {
             run_len: 16,
             bit_width: 3,
-            bit_packed_values: Bytes::from([10u16.as_bytes(), 20u32.as_bytes()].concat()),
+            encoded_values: Bytes::from([10u16.as_bytes(), 20u32.as_bytes()].concat()),
         }
     );
 
     // second run
-    let (run, remaining) = get_rle_bit_packed_run(remaining, 3)?;
+    let (run, remaining) = read_rle_bit_packed_run(remaining, 3)?;
     assert_eq!(
         run,
         RleBitPackedRun::BitPacked {
             run_len: 32,
             bit_width: 3,
-            bit_packed_values: Bytes::from([10u32.as_bytes(), 20u64.as_bytes()].concat()),
+            encoded_values: Bytes::from([10u32.as_bytes(), 20u64.as_bytes()].concat()),
         }
     );
 
@@ -102,24 +102,24 @@ fn rle_run_width_1() -> Result<()> {
     );
 
     // first run
-    let (run, remaining) = get_rle_bit_packed_run(data, 1)?;
+    let (run, remaining) = read_rle_bit_packed_run(data, 1)?;
     assert_eq!(
         run,
         RleBitPackedRun::Rle {
             run_len: 2,
             bit_width: 1,
-            repeated_value: Bytes::from(10u8.as_bytes())
+            encoded_values: Bytes::from(10u8.as_bytes())
         }
     );
 
     // second run
-    let (run, remaining) = get_rle_bit_packed_run(remaining, 1)?;
+    let (run, remaining) = read_rle_bit_packed_run(remaining, 1)?;
     assert_eq!(
         run,
         RleBitPackedRun::Rle {
             run_len: 4,
             bit_width: 1,
-            repeated_value: Bytes::from(10u8.as_bytes())
+            encoded_values: Bytes::from(10u8.as_bytes())
         }
     );
 
@@ -143,24 +143,24 @@ fn rle_run_width_10() -> Result<()> {
     );
 
     // first run
-    let (run, remaining) = get_rle_bit_packed_run(data, 10)?;
+    let (run, remaining) = read_rle_bit_packed_run(data, 10)?;
     assert_eq!(
         run,
         RleBitPackedRun::Rle {
             run_len: 2,
             bit_width: 10,
-            repeated_value: Bytes::from(10u16.as_bytes())
+            encoded_values: Bytes::from(10u16.as_bytes())
         }
     );
 
     // second run
-    let (run, remaining) = get_rle_bit_packed_run(remaining, 10)?;
+    let (run, remaining) = read_rle_bit_packed_run(remaining, 10)?;
     assert_eq!(
         run,
         RleBitPackedRun::Rle {
             run_len: 4,
             bit_width: 10,
-            repeated_value: Bytes::from(10u16.as_bytes())
+            encoded_values: Bytes::from(10u16.as_bytes())
         }
     );
 
