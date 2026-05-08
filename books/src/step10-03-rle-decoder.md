@@ -11,7 +11,7 @@ Implement the `rle_decode` function in `src/decoder/rle.rs`. It takes the encode
 `Bytes` and returns the decoded vector of `Scalar`. For this task, the data type is always boolean
 and the bit-width is 1.
 
-```rust
+```rust,ignore
 pub fn rle_decode(
     encoded_data: Bytes,
     parquet_type: Type,
