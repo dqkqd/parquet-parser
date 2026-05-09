@@ -28,8 +28,8 @@ pub fn add_nulls_entries(
 ///
 /// This allows creating a null value using [`Scalar::null`] for a specific [`Type`].
 #[allow(unused)]
-fn parquet_to_polars_type(parquet_type: Type) -> DataType {
-    match parquet_type {
+fn scalar_null(parquet_type: Type) -> Scalar {
+    let data_type = match parquet_type {
         Type::BOOLEAN => DataType::Boolean,
         Type::INT32 => DataType::Int32,
         Type::INT64 => DataType::Int64,
@@ -37,5 +37,6 @@ fn parquet_to_polars_type(parquet_type: Type) -> DataType {
         Type::DOUBLE => DataType::Float64,
         Type::BYTE_ARRAY => DataType::String,
         _ => unimplemented!("Unsupported"),
-    }
+    };
+    Scalar::null(data_type)
 }
