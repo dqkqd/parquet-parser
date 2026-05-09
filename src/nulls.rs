@@ -1,9 +1,7 @@
 use anyhow::Result;
 use polars::prelude::*;
 
-use crate::{
-    format::Type, page::Page,
-};
+use crate::{format::Type, page::Page};
 
 /// Decode a definition levels.
 ///
@@ -13,7 +11,7 @@ use crate::{
 /// - `false`: the value for this column is missing (null).
 #[allow(unused_variables)]
 pub fn decode_definition_levels(page: &Page) -> Result<Vec<bool>> {
-    todo!("step13-01: decode definition levels")
+    todo!("step11-01: decode definition levels")
 }
 
 /// Add null entries to a vector of [`Scalar`] decoded from page data.
@@ -23,7 +21,7 @@ pub fn add_nulls_entries(
     scalars: Vec<Scalar>,
     parquet_type: Type,
 ) -> Result<Vec<Scalar>> {
-    todo!("step13-02: handle nulls in a column")
+    todo!("step11-02: handle nulls in a column")
 }
 
 /// Convert parquet type to polar's [`DataType`].
