@@ -1,5 +1,8 @@
 use anyhow::Result;
-use parquet_parser::{decoder::decode_page, file_metadata::read_file_metadata, page::read_pages};
+use parquet_parser::{
+    dictionary::dictionary_entries, file_metadata::read_file_metadata,
+    page::read_pages,
+};
 use polars::prelude::*;
 
 use crate::make_parquet_bytes;
@@ -30,12 +33,9 @@ three
     assert!(pages.dictionary_page.is_some());
     assert_eq!(pages.data_pages.len(), 1);
 
-    let dictionary_page = pages.dictionary_page.unwrap();
-
-    // the dictionary page contains unique value and is encoded using plain encoding!
-    assert_eq!(dictionary_page.num_values(), 3);
+    let dictionary_entries = dictionary_entries(&pages, column_metadata.type_)?.unwrap();
     assert_eq!(
-        decode_page(&dictionary_page, column_metadata.type_, 3)?,
+        dictionary_entries,
         [
             Scalar::from(PlSmallStr::from("one")),
             Scalar::from(PlSmallStr::from("two")),

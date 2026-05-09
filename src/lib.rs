@@ -7,6 +7,7 @@ pub mod writer;
 pub mod column;
 pub mod compression;
 pub mod decoder;
+pub mod dictionary;
 pub mod file_metadata;
 pub mod magic;
 pub mod nulls;

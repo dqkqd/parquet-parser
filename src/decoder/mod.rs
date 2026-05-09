@@ -19,7 +19,7 @@ pub fn decode_page(page: &Page, parquet_type: Type, num_values: usize) -> Result
     match page.encoding() {
         Encoding::PLAIN => todo!("step05: plain decoder"),
         Encoding::RLE => todo!("step10-05: rle bit-packing hybrid decoder"),
-        Encoding::RLE_DICTIONARY => todo!("step12-01: dictionary decoder"),
+        Encoding::RLE_DICTIONARY => todo!("step12-02: dictionary decoder"),
         e => unimplemented!("decode_data_page: unsupported encoding {:?}", e),
     }
 }

@@ -9,8 +9,8 @@ use crate::format::CompressionCodec;
 #[allow(unused_variables)]
 pub fn decompress(compressed_data: Bytes, codec: CompressionCodec) -> Result<Bytes> {
     match codec {
-        CompressionCodec::UNCOMPRESSED => todo!("step14: implement compression"),
-        CompressionCodec::SNAPPY => todo!("step14: implement compression"),
+        CompressionCodec::UNCOMPRESSED => todo!("step13: implement compression"),
+        CompressionCodec::SNAPPY => todo!("step13: implement compression"),
         _ => unimplemented!("Unsupported codec: {}", codec.0),
     }
 }
