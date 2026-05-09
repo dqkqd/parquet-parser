@@ -1,5 +1,5 @@
 use anyhow::Result;
-use bytes::Bytes;
+use bytes::{Buf, Bytes};
 use polars::prelude::*;
 
 use crate::{decoder::uleb128::uleb128_decode, format::Type};
@@ -67,13 +67,26 @@ pub fn read_rle_bit_packed_run(
 ///
 /// This function extract all the runs. It should keep calling the function [`read_rle_bit_packed_run`]
 /// until there is no remaining data left.
-#[allow(unused_variables)]
 pub fn read_rle_bit_packed_runs(
     encoded_data: Bytes,
     bit_width: u8,
     prepend_length: bool,
 ) -> Result<Vec<RleBitPackedRun>> {
-    todo!("step10-03: extract all runs")
+    let mut encoded_data = encoded_data;
+
+    if prepend_length {
+        let length = encoded_data.get_u32_le();
+        encoded_data = encoded_data.slice(..length as usize);
+    }
+
+    let mut runs = Vec::new();
+    while !encoded_data.is_empty() {
+        let (run, remaining) = read_rle_bit_packed_run(encoded_data, bit_width)?;
+        runs.push(run);
+        encoded_data = remaining;
+    }
+
+    Ok(runs)
 }
 
 /// Decode a single rle bit-packed run.
