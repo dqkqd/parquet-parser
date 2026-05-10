@@ -5,7 +5,7 @@ all packed together. In this step, we will extract all pages for a given column 
 
 ![all pages in a column chunks are written back to back](images/pages-in-a-column-chunk-are-written-back-to-back.png)
 
-All information for getting column data is stored in the `ColumnMetaData`, which contains:
+All information for getting a column chunk data is stored in the `ColumnMetaData`, which contains:
 
 - `data_page_offset`: the offset of a column chunk in a parquet file
 - `total_compressed_size`: the length of a column chunk data, this includes multiple pages packed
@@ -13,9 +13,9 @@ All information for getting column data is stored in the `ColumnMetaData`, which
 
 ![column metadata stores position and length of the column data](images/column-metadata-stores-position-and-length.png)
 
-Pages in a column chunk are represented as the `Pages` struct with 2 fields: `data_pages` and
+Pages in a column chunk are represented as `Pages` struct with 2 fields: `data_pages` and
 `dictionary_page`. For this step, we only focus on the `data_pages`, the `dictionary_page` will be
-handled later in the [Dictionary Page section](./step11-dictionary-page.md).
+handled later in the [Dictionary Page section](./step12-01-dictionary-page.md).
 
 ```rust,ignore
 pub struct Pages {

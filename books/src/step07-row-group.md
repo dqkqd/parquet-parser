@@ -16,11 +16,10 @@ As some of you might expect, to represent the data for a row group and a parquet
 
 ## Task
 
-Implement two functions `read_row_group` and `read_row_groups` in `src/row_group.rs`.
-
 ### `read_row_group`
 
-This function takes the entire file data as `Bytes` and returns a `DataFrame`.
+Implement the `read_row_group` function in `scr/row_group.rs`. It takes the entire file data as
+`Bytes` and returns a `DataFrame`.
 
 ```rust,ignore
 pub fn read_row_group(data: Bytes, row_group: &RowGroup) -> Result<DataFrame> {
@@ -34,7 +33,8 @@ to group multiple columns together into a single `DataFrame`.
 
 ### `read_row_groups`
 
-This function takes the entire file data as `Bytes` and returns a `DataFrame`.
+Implement the `read_row_groups` function in `src/row_group.rs`. It takes the entire file data as
+`Bytes` and returns a `DataFrame`.
 
 ```rust,ignore
 pub fn read_row_groups(data: Bytes, file_metadata: &FileMetaData) -> Result<DataFrame> {

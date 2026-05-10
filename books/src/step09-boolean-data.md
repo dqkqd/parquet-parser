@@ -18,7 +18,7 @@ width.
 
 *The figure above just gives you a rough idea of how bit-packed works in general, it isn't exactly
 what parquet bit-packed encoding does, we will look into this later in
-[Bit-packed arbitrary bit-width](./step12-03-dictionary-decoder-bit-packed-arbitrary-bit-width.md).*
+[Bit-packed arbitrary bit-width](./step12-04-dictionary-decoder-bit-packed-arbitrary-bit-width.md).*
 
 ## Parquet bit-packed encoding for boolean data
 
@@ -44,12 +44,10 @@ no remaining data left (or if we get enough values).
 
 ## Task
 
-Implement the `bit_packed_decode` function in `src/decoder/bit_packed.rs`, then apply it to
-`plain_decode` for boolean data type.
-
 ### `bit_packed_decode`
 
-This function takes the encoded page data as `Bytes` and returns a decoded vector of `Scalar`.
+Implement the `bit_packed_decode` function in `src/decoder/bit_packed.rs`. It takes the encoded page
+data as `Bytes` and returns a decoded vector of `Scalar`.
 
 ```rust,ignore
 pub fn bit_packed_decode(
@@ -66,7 +64,7 @@ For boolean data, the bit-width is always 1.
 
 ### `plain_decode`
 
-Update the `plain_decode` function to handle boolean data type.
+Update the `plain_decode` in `src/decoder/plain.rs` function to handle boolean data type.
 
 ```rust,ignore
 pub fn plain_decode(

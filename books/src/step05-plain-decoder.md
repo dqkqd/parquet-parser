@@ -33,13 +33,11 @@ let scalar_string = Scalar::from(PlSmallStr::from_string("one"))
 
 ## Task
 
-Implement two functions `plain_decode` in `src/decoder/plain.rs` and `decode_page` in
-`src/decoder/mod.rs`.
-
 ### `plain_decode`
 
-This function takes the encoded page data as `Bytes` and returns a decoded vector of `Scalar` based
-on the data type. The `num_values` is the expected value for the vector.
+Implement the `plain_decode` function in `src/decoder/plain.rs`. It takes the encoded page data as
+`Bytes` and returns a decoded vector of `Scalar` based on the data type. The `num_values` is the
+expected value for the vector.
 
 ```rust,ignore
 pub fn plain_decode(
@@ -61,11 +59,8 @@ pub fn plain_decode(
 
 Some important notes:
 
-- You can get the encoded page data using `Page::encoded_values()`
-
 - You don't have to handle `BOOLEAN` data yet, it requires different encoding, which will be covered
   in [Boolean Data section](./step09-boolean-data.md)
-
 - To avoid messing with unicode data, we assume all `BYTE_ARRAY` data can be converted to `String`
   without error. In other words, this never panics
 
@@ -75,19 +70,20 @@ Some important notes:
 
 ### `decode_page`
 
-This is a wrapper around all supported decoders, it checks the page's encoding and applies the
-correct decoder. You need to handle the `Encoding::PLAIN` arm in this step.
+Implement the `decode_page` function in`src/decoder/mod.rs`. This is a wrapper around all supported
+decoders, it checks the page's encoding and applies the correct decoder. You need to handle the
+`Encoding::PLAIN` arm in this step.
 
 ```rust,ignore
 pub fn decode_page(page: &Page, parquet_type: Type, num_values: usize) -> Result<Vec<Scalar>> {
     match page.encoding() {
         Encoding::PLAIN => todo!("step05: plain decoder"),
-        Encoding::RLE => todo!("step10-04: rle bit-packed hybrid decoder"),
-        Encoding::RLE_DICTIONARY => todo!("step12-01: dictionary decoder"),
-        e => unimplemented!("decode_data_page: unsupported encoding {:?}", e),
+        // ...
     }
 }
 ```
+
+You can get the encoded page data using `Page::encoded_values()`.
 
 ## Test
 
@@ -184,9 +180,7 @@ pub fn plain_decode(
 pub fn decode_page(page: &Page, parquet_type: Type, num_values: usize) -> Result<Vec<Scalar>> {
     match page.encoding() {
         Encoding::PLAIN => plain_decode(page.encoded_values(), parquet_type, num_values),
-        Encoding::RLE => todo!("step10-04: rle bit-packed hybrid decoder"),
-        Encoding::RLE_DICTIONARY => todo!("step12-01: dictionary decoder"),
-        e => unimplemented!("decode_data_page: unsupported encoding {:?}", e),
+        // ...
     }
 }
 ```
